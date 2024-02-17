@@ -1,0 +1,100 @@
+@import "../../css-config/mixins.scss";
+
+.login-container {
+  width: 100%;
+  height: 80vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  .heading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10%;
+    width: 100%;
+    h1 {
+      font-size: 2.5rem;
+    }
+  }
+  .form-container {
+    width: 100%;
+    margin-bottom: 1.5rem;
+    form {
+      .info {
+        display: flex;
+        flex-direction: column;
+        width: 80%;
+        margin: auto;
+        padding: 20px;
+
+        p {
+          position: relative;
+          display: flex;
+          align-items: center;
+          margin-bottom: 15px;
+
+          svg {
+            position: absolute;
+            left: 10px;
+            color: #828282;
+
+            width: 1.5rem;
+            height: 1.5rem;
+          }
+
+          input {
+            padding-left: 30px;
+            width: 100%;
+            border: 1px solid #d0d0d0;
+
+            border-radius: 5px;
+            height: 3.5rem;
+            font-family: "open sans";
+          }
+        }
+      }
+      .btn-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        button {
+          width: 70%;
+          height: 3rem;
+          background: #17a2b8;
+          border-radius: 2rem;
+          font-size: 16px;
+          color: white;
+          height: 3.5rem;
+          border: none;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  .register-btn {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    p {
+      color: grey;
+      font-size: 1.4rem;
+      margin-bottom: 2rem;
+    }
+    button {
+      width: 70%;
+      height: 3rem;
+      background: white;
+      border-radius: 2rem;
+      font-size: 16px;
+      color: #17a2b8;
+      height: 3.5rem;
+      border: 1.5px solid #17a2b8;
+      cursor: pointer;
+    }
+  }
+}
