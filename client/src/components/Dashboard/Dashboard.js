@@ -1,8 +1,18 @@
 import React from 'react'
-
+import Navbar from '../Navbar/Navbar'
+import "./dashboard.scss"
 const Dashboard = () => {
   return (
-    <div>Dashboard</div>
+    <>
+    <section className='dashboard-container'>
+      <div className='navbar-container'>
+        <Navbar/>
+      </div>
+      <div className='management-container'>
+      
+      </div>
+    </section>
+    </>
   )
 }
 

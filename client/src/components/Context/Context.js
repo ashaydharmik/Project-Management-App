@@ -5,10 +5,19 @@ const AppContext = React.createContext();
 const AppProvider = ({ children }) => {
   const navigate = useNavigate();
  const [showRegister, setShowRegister] = useState(true)
+ const auth = localStorage.getItem("user")
 
  const showLoginForm =()=>{
   setShowRegister(false)
  }
+
+const handleLogout=()=>{
+ if(auth){
+   localStorage.clear();
+   navigate("/")
+ }
+}
+
 
 
   return (
@@ -17,7 +26,8 @@ const AppProvider = ({ children }) => {
         navigate,
         showLoginForm,
         showRegister,
-        setShowRegister
+        setShowRegister,
+        handleLogout
       }}
     >
       {children}
