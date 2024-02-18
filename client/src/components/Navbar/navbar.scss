@@ -1,68 +1,67 @@
 @import "../css-config/mixins.scss";
 
-.nav-items-container{
-    width: 100%;
-    // background-color: aqua;
-    .heading{
-        // background-color: beige;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 3rem;
-        h1{
-            font-size: 1.6rem;
-        }
+.nav-items-container {
+  width: 100%;
+  // background-color: aqua;
+  .heading {
+    // background-color: beige;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    h1 {
+      font-size: 1.6rem;
     }
-    .nav-menu {
-        width: 100%;
-      
-        button {
-          width: 100%;
-          height: 3.5rem;
-          display: flex;
-          justify-content: flex-start;
-          align-items: center; 
-          gap: 1rem;
-          margin-bottom: 1rem;
+  }
+  .nav-menu {
+    width: 100%;
+
+    button {
+      width: 100%;
+      height: 3.5rem;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
       padding-left: 6rem;
       border: none;
       cursor: pointer;
       background-color: white;
-          img {
-            width: 20px;
-            height: 20px;
-         }
+      img {
+        width: 20px;
+        height: 20px;
+      }
+
+      span {
+        font-size: 1.6rem;
+      }
       
-          span {
-            font-size: 1.6rem;
-           
-          }
-          &:hover{
-            font-weight: 600;
-          }
-        }
+      &.active{
+        font-weight: 600;
+        background: #4391ED1A;
       }
     }
-    .logout-container{
-        width: 100%;
-       
-      p {
-        display: flex;
-        justify-content: center;
-        align-items: center; 
-        gap: 1rem;
-        font-size: 1.8rem;
-        color: #CF3636;
-        font-weight: 500;
-margin-bottom: 2rem;
-cursor: pointer;
+  }
+}
+.logout-container {
+  width: 100%;
 
-          svg {
-              width: 25px;
-              height: 30px;
-              
-           }
-        }
+  p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.8rem;
+    color: #cf3636;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    cursor: pointer;
+
+    svg {
+      width: 25px;
+      height: 30px;
     }
-    
+  }
+}

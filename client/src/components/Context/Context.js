@@ -6,6 +6,7 @@ const AppProvider = ({ children }) => {
   const navigate = useNavigate();
  const [showRegister, setShowRegister] = useState(true)
  const auth = localStorage.getItem("user")
+ const [activeNavPage, setActiveNavPage] = useState("BoardPage")
 
  const showLoginForm =()=>{
   setShowRegister(false)
@@ -18,6 +19,16 @@ const handleLogout=()=>{
  }
 }
 
+const handleBoardClick =()=>{
+  setActiveNavPage("BoardPage")
+}
+const handleAnalyticsClick =()=>{
+  setActiveNavPage("AnalyticsPage")
+}
+const handleSettingsClick =()=>{
+  setActiveNavPage("SettingsPage")
+}
+
 
 
   return (
@@ -27,7 +38,11 @@ const handleLogout=()=>{
         showLoginForm,
         showRegister,
         setShowRegister,
-        handleLogout
+        handleLogout,
+        handleBoardClick,
+        handleAnalyticsClick,
+        handleSettingsClick,
+        activeNavPage
       }}
     >
       {children}
