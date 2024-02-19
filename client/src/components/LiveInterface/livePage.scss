@@ -1,0 +1,128 @@
+@import "../css-config/mixins.scss";
+
+.livepage-container {
+  width: 100%;
+  height: 100vh;
+  padding: 1rem;
+
+  .heading {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: 10vh;
+    gap: 1rem;
+    @include md{
+        height: 5vh;
+        font-size: 16px;
+        margin-bottom: 2rem;
+    }
+  }
+
+  .todo-container {
+    border: 1px solid #b8c0c9;
+    width: 100%;
+    max-height: 80vh;
+    border-radius: 1rem;
+    padding: 1rem;
+    @include md{
+        padding: 0;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    }
+    .todo-box {
+      height: 100%;
+      width: 100%;
+      @include md{
+        width: 50%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    border: 1px solid grey;
+    padding: 1rem;
+    border-radius: 10px;
+      }
+      
+
+      .priority-box {
+        width: 100%;
+        height: 5%;
+        margin-bottom: 10px;
+      }
+      .todo-name {
+        height: 10%;
+        font-size: 1.5rem;
+        font-weight: 600;
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 10px;
+        align-items: center;
+        display: flex;
+        /* place-items: center; */
+        align-items: center;
+      }
+      .checklist-box {
+        width: 100%;
+        height: 10%;
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .todo-lists {
+        width: 100%;
+        max-height: 50vh;
+        overflow-y: scroll;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 15px;
+        label {
+        //   background: aquamarine;
+          width: 100%;
+          height: 100%;
+          height: auto;
+          /* height: fit-content; */
+          border: 1px solid grey;
+          border-radius: 5px;
+          /* height: auto; */
+          height: fit-content;
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.5rem 1rem;
+          font-size: 18px;
+          font-weight: 500;
+        }
+      }
+      .date-box {
+        width: 100%;
+        height: 10%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 2rem;
+        // background: beige;
+        p{
+            font-weight: 500;
+        }
+        p:last-child {
+            background: #CF3636;
+
+          color: white;
+          font-weight: 500;
+          padding: 0.3rem 0.5rem;
+          border-radius: 7px;
+        }
+      }
+    }
+  }
+}

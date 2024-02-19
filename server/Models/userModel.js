@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please re-enter your password"],
     },
+    newPassword: {
+      type: String,
+      default: null,
+    },
   },
   {
     timestamps: true,

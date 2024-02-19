@@ -10,7 +10,7 @@
         width: 100%;
         // background-color: aliceblue;
         h1{
-            font-size: 2rem;
+            font-size: 1.5rem;
         }
     }
     .analytics-box{
@@ -31,8 +31,9 @@
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    font-size: 1.8rem;
-                    margin-bottom: 1rem;
+                    font-size: 1rem;
+                    margin-bottom: 0.5rem;
+                    font-weight: 500;
                     svg{
                         color: #90C4CC;
                         font-size: 1.5rem; 

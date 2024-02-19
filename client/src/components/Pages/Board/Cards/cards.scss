@@ -1,0 +1,47 @@
+@import "../../../css-config/mixins.scss";
+
+.cards-container {
+  width: 100%;
+  height: 80vh;
+
+  .board-title-filter-container {
+    width: 100%;
+    height: 5vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 10vh;
+    font-weight: 600;
+    select {
+      border: none;
+    }
+  }
+  .cards-box-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    height: 100%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    .card-box {
+      background: #eef2f5;
+      padding: 1rem;
+      border-radius: 10px;
+      width: 17rem;
+      margin-bottom: 1rem;
+      overflow-y: auto;
+      .card-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+        svg{
+            cursor: pointer;
+            margin-left: 20px;
+            font-size: 1.3rem;
+        }
+      }
+    }
+  }
+}

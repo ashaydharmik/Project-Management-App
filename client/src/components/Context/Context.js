@@ -1,12 +1,14 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 const AppContext = React.createContext();
 
 const AppProvider = ({ children }) => {
   const navigate = useNavigate();
  const [showRegister, setShowRegister] = useState(true)
- const auth = localStorage.getItem("user")
  const [activeNavPage, setActiveNavPage] = useState("BoardPage")
+ const auth = JSON.parse(localStorage.getItem("user"))
+
+
 
  const showLoginForm =()=>{
   setShowRegister(false)
@@ -34,6 +36,8 @@ const handleSettingsClick =()=>{
   return (
     <AppContext.Provider
       value={{
+        // setAuthToken,
+        // token,
         navigate,
         showLoginForm,
         showRegister,

@@ -33,7 +33,7 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    const token = jwt.sign({ email: user.email }, process.env.ACCESS_KEY, {expiresIn:"5min"});
+    const token = jwt.sign({ email: user.email, name:user.name }, process.env.ACCESS_KEY);
     res.status(201).json({
       message: "User successfully created",
       _id: user.id,
@@ -57,14 +57,13 @@ const loginUser = asyncHandler(async (req, res) => {
   if (user && (await bcrypt.compare(password, user.password))) {
     const token = jwt.sign(
       {
-        user: {
           id: user.id,
           email: user.email,
           password: user.password,
-        },
+          name:user.name
       },
-      process.env.ACCESS_KEY,
-      {expiresIn:"5min"}
+      process.env.ACCESS_KEY
+   
     );
     res.status(201).json({
       message: "User Successfully logIn",
@@ -78,4 +77,72 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { registerUser, loginUser };
+
+// update password
+const updatePassword = asyncHandler(async (req, res) => {
+  const { name, password, newPassword } = req.body;
+
+  if (!name || !password || !newPassword) {
+    res.status(400).json({ message: "Please enter all the fields" });
+    return;
+  }
+
+  const user = await User.findOne({ name });
+  if (!user) {
+    res.status(400).json({ message: "User not found" });
+    return;
+  }
+
+  const passwordMatch = await bcrypt.compare(password, user.password);
+  if (!passwordMatch) {
+    res.status(400).json({ message: "Invalid current password" });
+    return;
+  }
+
+  const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+  // Update the user's password
+  user.password = hashedNewPassword;
+  await user.save();
+
+  const token = jwt.sign({ email: user.email }, process.env.ACCESS_KEY);
+
+  res.status(200).json({
+    message: "Password successfully updated",
+    _id: user.id,
+    userName: user.name,
+    token,
+  });
+});
+
+
+//fetching current user
+const currentUser = asyncHandler(async (req, res) => {
+  try {
+    // Log the decoded token and the user's name
+    console.log('Decoded Token:', req.user);
+    const { name } = req.user;
+
+    const user = await User.findOne({ name });
+
+    if (!user) {
+      console.error('User not found in the database.');
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    res.status(200).json({
+      userName: user.name,
+    });
+  } catch (error) {
+    console.error("Error fetching current user:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+
+
+
+
+
+module.exports = { registerUser, loginUser, updatePassword, currentUser };

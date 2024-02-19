@@ -4,6 +4,7 @@ import Auth from './components/Authentication/Auth';
 import Dashboard from './components/Dashboard/Dashboard';
 import PrivateComponent from './components/PrivateComponent/PrivateComponent';
 import "./App.css"
+import LivePage from './components/LiveInterface/LivePage';
 function App() {
 
   return (
@@ -12,6 +13,7 @@ function App() {
 
           <Route element={<PrivateComponent />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/live" element={<LivePage />} />
           </Route>
   
           <Route path="/" element={<Auth />} />

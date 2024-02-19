@@ -20,16 +20,25 @@
       display: grid;
       place-items: center;
       .image-container {
-        background-color: aliceblue;
-        width: 50%;
-        height: 60%;
+        // background-color: aliceblue;
+        width: fit-content;
+        height: fit-content;
         position: relative;
         display: grid;
         place-items: center;
-        margin-bottom: 2rem;
+       
+        position: relative;
 
-        img {
-          width: 100%;
+        .circle {
+          position: absolute;
+  z-index: 1;
+  width: 70%;
+        }
+        .avatar{
+          position: relative;
+          z-index: 2;
+          width: 60%;
+top: 1rem;
         }
       }
       .content {
@@ -37,12 +46,12 @@
         text-align: center;
         // background: #c82525;
         p {
-          font-size: 2.3rem;
+          font-size: 1.5rem;
           color: white;
           font-weight: 600;
           margin-bottom: 0.5rem;
           &:last-child {
-            font-size: 1.4rem;
+            font-size: 0.9rem;
             font-weight: normal;
           }
         }
