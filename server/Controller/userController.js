@@ -33,7 +33,7 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    const token = jwt.sign({ email: user.email, name:user.name }, process.env.ACCESS_KEY);
+    const token = jwt.sign({ id: user.id, email: user.email, name: user.name }, process.env.ACCESS_KEY);
     res.status(201).json({
       message: "User successfully created",
       _id: user.id,

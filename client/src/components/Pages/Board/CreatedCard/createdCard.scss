@@ -1,0 +1,95 @@
+@import "../../../css-config/mixins.scss";
+
+.cards{
+    width: 100%;
+    background: white;
+    // height: fit-content;
+    padding: 1rem;
+    // margin-top: 1rem;
+    border-radius: 10px;
+
+.created-card-heading{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 2rem;
+    // background: antiquewhite;
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 500;
+    p:last-child{
+        font-size: 18px;
+        cursor: pointer;
+    }
+}
+.created-card-title{
+    width: 100%;
+    height: 2rem;
+    // background: aqua;
+    font-size: 16px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.created-card-checklist{
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: 500;
+    align-items: center;
+    p:last-child{
+        background: #c2c2c2;
+    padding: 1px 5px;
+    border-radius: 2px;
+    cursor: pointer;
+    }
+}
+.created-card-lists{
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1rem;
+    overflow-y: auto;
+    label{
+        width: 100%;
+        
+        height: fit-content;
+        border: 1px solid grey;
+        border-radius: 5px;
+       
+        justify-content: flex-start;
+      
+        padding: 0.3rem;
+        input{
+            margin-right: 10px;
+        }
+    }
+}
+.created-card-buttons{
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+    align-items: center;
+    button:first-child{
+        color: white;
+        background: #CF3636;
+        
+    }
+    button{
+        background: #EEECEC;
+        color: black;
+        font-weight: 500;
+        padding: 0.3rem 0.5rem;
+        border-radius: 7px;
+        border: none;
+        width: fit-content;
+        font-size: 10px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+}
+}

@@ -1,0 +1,203 @@
+@import "../../css-config/mixins.scss";
+
+.todoModal-container {
+  width: 100%;
+  height: 100%;
+  .todo-form-container {
+
+    form {
+      font-size: 14px;
+      font-weight: 600;
+      font-family: "open sans";
+
+      .task-title {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: fit-content;
+        height: 9vh;
+        label {
+          span {
+            color: red;
+          }
+        }
+        input {
+          margin-top: 5px;
+          border-radius: 5px;
+          height: 30px;
+          border: 1px solid #d2d0d0;
+          padding-left: 5px;
+          outline: none;
+        }
+      }
+      .task-priority {
+        margin-top: 1rem;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        height:5vh;
+        align-items: center;
+        // background-color: #63C05B;
+        label {
+          span {
+            color: red;
+          }
+        }
+      
+        button {
+          border: 1px solid #d2d0d0;
+          border-radius: 7px;
+          font-size: 12px;
+          font-weight: 500;
+          padding: 8px 25px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 5px;
+          color: #767575;
+          font-weight: 600;
+          background-color: white;
+          cursor: pointer;
+          &:nth-child(2) svg {
+            color: red;
+          }
+      
+          &:nth-child(3) svg {
+            color: #18B0FF;
+          }
+      
+          &:nth-child(4) svg {
+            color: #63C05B;
+          }
+        }
+      }
+      
+      .checklist {
+        margin-top: 1rem;
+        width: 100%;
+        height: 3vh;
+        span {
+          color: red;
+        }
+      }
+      .task-lists {
+        margin-top: 1rem;
+        width: 100%;
+        max-height: 25vh;
+        overflow-y: auto;
+        label {
+            height: 3rem;
+    border: 1px solid grey;
+          height: fit-content;
+          border-radius: 5px;
+          padding: 0.3rem;
+          width: 100%;
+          position: relative;
+          display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 10px;
+    input{
+        &:nth-child(1) {
+              width: 5%;
+            margin-right: 5px;
+            height: 15px;
+            cursor: pointer;
+            
+          }
+          &:nth-child(2){
+              width: 100%;
+              border: none;
+              outline: none;
+          }
+
+    }
+          svg {
+            position: absolute;
+            right: 9px;
+            color: #cf3636;
+            width: 5%;
+            cursor: pointer;
+          }
+        }
+      }
+      .task-add-button {
+          margin-top: 1rem;
+          width: 100%;
+          height: 3vh;
+        button{
+
+            border: none;
+            background: none;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            width: 100%;
+            cursor: pointer;
+            color: #767575;
+            font-weight: 600
+;
+            svg {
+              margin-right: 9px;
+            }
+        }
+      }
+      .task-date-save-buttons {
+        position: absolute;
+        bottom: 1rem;
+        display: flex;
+        height: 6vh;
+        /* padding: 1rem; */
+        justify-content: space-between;
+        width: 90%;
+        // background-color: #63C05B;
+        .due-date-button {
+            width: 30%;
+            // background-color: #d2d0d0;
+          .datepicker {
+            width: 95%;
+            font-size: 14px;
+            padding: 5px 10px;
+            border: 1px solid rgb(174, 174, 174);
+            border-radius: 10px;
+            font-weight: 600;
+            color: grey;
+            background-color: white;
+            height: 2.3rem;
+            cursor: pointer;
+            text-align: center;
+            
+        
+          }
+          
+        }
+        .submit-button {
+            // background-color: antiquewhite;
+          display: flex;
+          justify-content: space-between;
+          width: 55%;
+          button {
+            width: 48%;
+            font-size: 14px;
+            padding: 5px 10px;
+            border: 1px solid grey;
+            border-radius: 10px;
+            font-weight: 600;
+            // color: grey;
+            height: 2.3rem;
+            cursor: pointer;
+            &:nth-child(1){
+                border:1px solid #CF3636;
+                 color: #CF3636; 
+                 background-color: white;            
+            }
+            &:nth-child(2){
+                background: #17A2B8;
+                color: white;             
+            }
+          }
+        }
+      }
+    }
+  }
+}

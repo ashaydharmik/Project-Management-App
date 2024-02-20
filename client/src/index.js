@@ -5,7 +5,11 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { AppProvider } from './components/Context/Context';
+import Modal from 'react-modal';
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+// Set the app element for react-modal
+Modal.setAppElement('#root');
 root.render(
 <React.StrictMode>
   <BrowserRouter>

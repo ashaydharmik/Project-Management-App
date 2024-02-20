@@ -28,7 +28,7 @@
       background: #eef2f5;
       padding: 1rem;
       border-radius: 10px;
-      width: 17rem;
+      width: 20rem;
       margin-bottom: 1rem;
       overflow-y: auto;
       .card-title {
@@ -41,6 +41,14 @@
             margin-left: 20px;
             font-size: 1.3rem;
         }
+      }
+      .card{
+        width: 100%;
+    // background: white;
+    height: fit-content;
+    // padding: 1rem;
+    margin-top: 1rem;
+    // border-radius: 10px;
       }
     }
   }
