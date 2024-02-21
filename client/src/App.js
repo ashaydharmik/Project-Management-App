@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard/Dashboard';
 import PrivateComponent from './components/PrivateComponent/PrivateComponent';
 import "./App.css"
 import LivePage from './components/LiveInterface/LivePage';
+import TodoModal from './components/Modal/TodoModal/TodoModal';
 function App() {
 
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route element={<PrivateComponent />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/live" element={<LivePage />} />
+            <Route path="/todoModal/:id" element={<TodoModal/>}/>
           </Route>
   
           <Route path="/" element={<Auth />} />

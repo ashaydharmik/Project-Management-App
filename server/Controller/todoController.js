@@ -93,5 +93,37 @@ const getAllTodoCreated = asyncHandler(async (req, res) => {
 });
 
 
+//update todo task
+const updateTodo = asyncHandler(async(req,res)=>{
+  const { taskName, priority, checklist, dueDate} = req.body
+      const {_id} = req.params;
+     
+      if (!req.user) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+      }
 
-module.exports = {addTodo, fetchRecentTodo, getAllTodoCreated };
+      const availableTodo = await Todo.findOne({ _id})
+      if(!availableTodo){
+          res.status(404)
+          throw new Error("Todo not exists")
+      }
+
+  const updatedTodo = await Todo.findByIdAndUpdate(_id,{
+    taskName, priority, checklist, dueDate
+  },
+  {new:true}
+  )
+  if(updatedTodo){
+      res.status(200).json({message:"Product Updated Successfully", updatedTodo: updatedTodo})
+  }else{
+      res.status(400)
+      throw new Error("Invalid Data")
+  }
+  
+
+})
+
+
+
+module.exports = {addTodo, fetchRecentTodo, getAllTodoCreated, updateTodo };

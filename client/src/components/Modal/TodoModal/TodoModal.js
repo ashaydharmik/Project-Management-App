@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef  } from "react";
 import { GoDotFill } from "react-icons/go";
 import { IoMdAdd } from "react-icons/io";
 import { ImBin2 } from "react-icons/im";
@@ -7,16 +7,55 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios"
-const TodoModal = ({ closeModal }) => {
+const initialChecklistItem = { label: "", done: false };
+
+const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId }) => {
   const initialValue = {
     taskName: "",
     priority: "",
-    checklist: [],
+    checklist: [initialChecklistItem],
     dueDate: "",
   };
   const [todoData, setTodoData] = useState(initialValue);
   const [dueDate, setDueDate] = useState(null);
   const auth = JSON.parse(localStorage.getItem("user"))
+
+
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    if (singleTodo) {
+      const newDueDate = singleTodo.dueDate ? new Date(singleTodo.dueDate) : null;
+  
+      console.log("Previously set dueDate:", dueDate);
+      console.log("Newly calculated dueDate:", newDueDate);
+  
+      setTodoData((prevTodoData) => ({
+        ...prevTodoData,
+        taskName: singleTodo.taskName || "",
+        priority: singleTodo.priority || "",
+        checklist: singleTodo.checklist || [initialChecklistItem],
+        dueDate: newDueDate,
+      }));
+  
+      // Update the dueDate state directly
+      setDueDate(newDueDate);
+    } else {
+      // Handle the case when creating a new todo
+      setTodoData({
+        ...initialValue,
+        checklist: [initialChecklistItem],
+      });
+  
+      setDueDate(null);
+    }
+  }, [singleTodo, initialChecklistItem]);
+  
+  
+  
+  
+  
+  
 
   const handleDueDateChange = (date) => {
     setDueDate(date);
@@ -73,51 +112,78 @@ const TodoModal = ({ closeModal }) => {
     });
   };
 
-  const handleSubmit = async(e) => {
-    e.preventDefault();
+ // TodoModal.js
 
-    if (!todoData.checklist.some((item) => item.label.trim() !== "")) {
-      toast.error("Please add at least one todo task");
-      return;
-    }
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    // Display an error message or handle the validation as needed
-    if (!todoData.priority) {
-      toast.error("Please select a priority");
-      return;
-    }
-    // Add dueDate to todoData
-    const dataWithDueDate = {
-      ...todoData,
-      dueDate: dueDate,
-    };
-    
+  if (!todoData.checklist.some((item) => item.label.trim() !== "")) {
+    toast.error("Please add at least one todo task");
+    return;
+  }
+
+  // Display an error message or handle the validation as needed
+  if (!todoData.priority) {
+    toast.error("Please select a priority");
+    return;
+  }
+
+  // Add dueDate to todoData
+  const dataWithDueDate = {
+    ...todoData,
+    dueDate: dueDate,
+  };
+
   try {
-    // Make a POST request to your backend API
     const userToken = auth.token;
     const headers = {
-        'Content-Type': 'application/json',
-        "Authorization": `Bearer ${userToken}` 
-      };
-    const response = await axios.post('http://localhost:4000/addTodo', dataWithDueDate,  { headers });
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${userToken}`,
+    };
 
-    // Check if the request was successful
-    if (response.status === 200) {
-      console.log('Todo task successfully created:', response.data);
-      toast.success("Todo task successfully created");
-      setTimeout(() => {
-        closeModal(); // Close the modal after submitting
-      }, 1000);
-      
+    if (selectedTodoId) {
+      // Update existing todo
+      const response = await axios.put(
+        `http://localhost:4000/updateTodo/${selectedTodoId}`,
+        dataWithDueDate,
+        { headers }
+      );
+
+      if (response.status === 200) {
+        console.log("Todo task successfully updated:", response.data);
+        toast.success("Todo task successfully updated");
+
+        // Call the updateTodo function in Cards.js with the updated data
+        updateTodo(response.data.updatedTodo);
+      } else {
+        console.error("Error updating todo task:", response.data.message);
+        toast.error("Error updating todo task");
+      }
     } else {
-      console.error('Error creating todo task:', response.data.message);
-      toast.error("Error creating todo task");
+      // Create new todo
+      const response = await axios.post(
+        "http://localhost:4000/addTodo",
+        dataWithDueDate,
+        { headers }
+      );
+
+      if (response.status === 200) {
+        console.log("Todo task successfully created:", response.data);
+        toast.success("Todo task successfully created");
+      } else {
+        console.error("Error creating todo task:", response.data.message);
+        toast.error("Error creating todo task");
+      }
     }
+
+    // Close the modal after submitting
+    closeModal();
   } catch (error) {
-    console.error('Error creating todo task:', error.message);
-    toast.error("Error creating todo task");
+    console.error("Error:", error.message);
+    toast.error("Error updating/creating todo task");
   }
 };
+
 
 
   return (

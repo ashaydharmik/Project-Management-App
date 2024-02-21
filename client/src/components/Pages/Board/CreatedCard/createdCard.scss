@@ -7,6 +7,7 @@
     padding: 1rem;
     // margin-top: 1rem;
     border-radius: 10px;
+    margin-bottom: 1rem;
 
 .created-card-heading{
     display: flex;
@@ -17,10 +18,38 @@
     font-size: 10px;
     text-transform: uppercase;
     font-weight: 500;
-    p:last-child{
+   position: relative;
+    p{
+        display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    }
+    svg{
         font-size: 18px;
         cursor: pointer;
     }
+    .dropdown-content {
+        position: absolute;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    padding: 0px;
+    z-index: 1;
+    top: 100%;
+    width: 6rem;
+    right: 0;
+    color: black;
+    
+        p {
+            margin: 0;
+            padding: 8px;
+            cursor: pointer;
+            &:hover {
+                background-color: #f0f0f0;
+              }
+        }
+      }
+    
 }
 .created-card-title{
     width: 100%;
@@ -28,9 +57,12 @@
     // background: aqua;
     font-size: 16px;
     font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    P{
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 .created-card-checklist{
     display: flex;
@@ -74,10 +106,13 @@
     justify-content: space-between;
     gap: 5px;
     align-items: center;
-    button:first-child{
-        color: white;
-        background: #CF3636;
-        
+    .date-btn{
+        width: fit-content;
+        #dateBtn{
+            color: white;
+            background: #CF3636;
+            
+        }
     }
     button{
         background: #EEECEC;
@@ -90,6 +125,12 @@
         font-size: 10px;
         font-weight: 600;
         cursor: pointer;
+    }
+    .section-btn{
+        display: flex;
+        justify-content: space-between;
+        width: 75%;
+      
     }
 }
 }
