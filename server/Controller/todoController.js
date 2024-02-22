@@ -121,9 +121,30 @@ const updateTodo = asyncHandler(async(req,res)=>{
       throw new Error("Invalid Data")
   }
   
+})
+
+//delete Todo 
+const deleteTodo=asyncHandler(async(req,res)=>{
+  const { _id, taskName } = req.params;
+
+  if (!_id) {
+    res
+      .status(400)
+      .json({ error: "Invalid request. Missing created Todo ID." });
+    return;
+  }
+
+  const deletedTodo = await Todo.findByIdAndDelete(_id);
+
+  if (!deletedTodo) {
+    res.status(404).json({ error: "Created Todo not found." });
+  } else {
+    res.status(200).json({ message: "Todo Successfully Deleted!!", taskName: deletedTodo.taskName });
+  }
+
 
 })
 
 
 
-module.exports = {addTodo, fetchRecentTodo, getAllTodoCreated, updateTodo };
+module.exports = {addTodo, fetchRecentTodo, getAllTodoCreated, updateTodo , deleteTodo};

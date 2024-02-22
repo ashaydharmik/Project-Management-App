@@ -1,8 +1,44 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { GoDotFill } from "react-icons/go";
 import logo from "../../assets/logo.png";
 import "./livePage.scss"
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
 const LivePage = () => {
+    const [todoData, setTodoData]= useState([]);
+    const auth = JSON.parse(localStorage.getItem("user"));
+    const { todoId } = useParams();
+
+   
+
+    const singleTodoCard = () => {
+        const userToken = auth.token;
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        };
+      
+        axios
+          .get(`http://localhost:4000/getSingleTodo/${todoId}`, { headers })
+          .then((response) => {
+            // Check if the response has a 'data' property and a 'todo' property
+            if (response.data && response.data.todo) {
+              setTodoData(response.data.todo);
+            } else {
+              console.error("Invalid response format:", response);
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching todo data:", error);
+          });
+      };
+      
+
+    useEffect(()=>{
+        singleTodoCard();
+    },[])
+
+
   return (
     <>
     <section className='livepage-container'>

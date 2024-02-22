@@ -5,13 +5,19 @@ import { IoIosArrowUp } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
 import "./createdCard.scss";
 import axios from "axios";
-const CreatedCard = ({ openModal, globalCollapse   }) => {
+import DeleteModal from "../../../Modal/DeleteModal/DeleteModal";
+import { useNavigate } from "react-router-dom";
+
+
+const CreatedCard = ({ openModal, globalCollapse }) => {
   const auth = JSON.parse(localStorage.getItem("user"));
   const [singleTodoData, setSingleTodoData] = useState([]);
   const [showDropdown, setShowDropdown] = useState([]);
   const [isListCollapsed, setListCollapsed] = useState(true);
-
-
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteTodoId, setDeleteTodoId] = useState(null);
+  const navigate = useNavigate()
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -20,7 +26,9 @@ const CreatedCard = ({ openModal, globalCollapse   }) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${userToken}`,
         };
-        const response = await axios.get("http://localhost:4000/getAllTodo", { headers });
+        const response = await axios.get("http://localhost:4000/getAllTodo", {
+          headers,
+        });
         const todoArray = Object.values(response.data.todo);
         setSingleTodoData(todoArray);
         // Initialize isListCollapsed with false for each todo item
@@ -30,9 +38,7 @@ const CreatedCard = ({ openModal, globalCollapse   }) => {
       }
     };
     fetchData();
-  }, [auth.token, openModal]);
- 
-
+  }, [auth.token, openModal, isDeleteModalOpen]);
 
   const handleDropdown = (index) => {
     setShowDropdown((prev) => {
@@ -62,7 +68,6 @@ const CreatedCard = ({ openModal, globalCollapse   }) => {
       return newListCollapsed;
     });
   };
-  
 
   useEffect(() => {
     // Update isListCollapsed when globalCollapse changes
@@ -87,7 +92,9 @@ const CreatedCard = ({ openModal, globalCollapse   }) => {
     };
 
     axios
-      .put(`http://localhost:4000/updateTodo/${updatedTodo._id}`, updatedTodo, { headers })
+      .put(`http://localhost:4000/updateTodo/${updatedTodo._id}`, updatedTodo, {
+        headers,
+      })
       .then((res) => {
         console.log(res);
         // Handle the response or update local state as needed
@@ -97,9 +104,49 @@ const CreatedCard = ({ openModal, globalCollapse   }) => {
       });
   };
 
+  const handleDeleteOptionClick = (todoId, index) => {
+    // Close the dropdown
+    setShowDropdown((prev) => {
+      const newShowDropdown = [...prev];
+      newShowDropdown[index] = false;
+      return newShowDropdown;
+    });
+  
+    // Set the deleteTodoId and open the delete modal
+    setDeleteTodoId(todoId);
+    console.log("deleted todo id :", todoId)
+    setDeleteModalOpen(true);
+  };
+  
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case 'low':
+        return '#63C05B'; // or any color you want for low priority
+      case 'moderate':
+        return '#18B0FF'; // or any color you want for moderate priority
+      case 'high':
+        return 'red'; // or any color you want for high priority
+      default:
+        return 'black'; 
+    }
+  };
+  
+///share link
+  const handleShareOptionClick = async (todoId) => {
+    try {
+      let fullUrl = `${window.location.origin}/getSingleTodo/${todoId}`;
 
-
-
+      await navigator.clipboard.writeText(fullUrl);
+      console.log(fullUrl);
+      console.log("URL is copied!");
+      navigate(`/live/${todoId}`)
+    } catch (err) {
+      // Log the error
+      console.error("Error copying to clipboard:", err);
+      console.log("URL is not copied");
+    }
+  };
+  
 
   return (
     <>
@@ -108,7 +155,7 @@ const CreatedCard = ({ openModal, globalCollapse   }) => {
           <div className="cards">
             <div className="created-card-heading">
               <p>
-                <GoDotFill />
+                <GoDotFill style={{ color: getPriorityColor(todo.priority) }}/>
                 {todo.priority}
               </p>
               <p onClick={() => handleDropdown(id)}>
@@ -117,8 +164,10 @@ const CreatedCard = ({ openModal, globalCollapse   }) => {
               {showDropdown[id] && (
                 <div className="dropdown-content">
                   <p onClick={() => handleOptionClick(todo._id, id)}>Edit</p>
-                  <p>Share</p>
-                  <p>Delete</p>
+                  <p onClick={() => handleShareOptionClick(todo._id)}>Share</p>
+                  <p onClick={() => handleDeleteOptionClick(todo._id, id)}>
+                    Delete
+                  </p>
                 </div>
               )}
             </div>
@@ -131,26 +180,28 @@ const CreatedCard = ({ openModal, globalCollapse   }) => {
                 {(todo?.checklist?.filter((item) => item.done) || []).length}/
                 {(todo?.checklist || []).length})
               </p>
-              
-              <div className="created-card-checklist">
-  <p onClick={(e) => handleToggleLists(id, e)}>
-    {isListCollapsed[id] ? <IoIosArrowUp /> : <IoIosArrowDown />}
-  </p>
-</div>
 
-              
+              <div className="created-card-checklist">
+                <p onClick={(e) => handleToggleLists(id, e)}>
+                  {isListCollapsed[id] ? <IoIosArrowUp /> : <IoIosArrowDown />}
+                </p>
+              </div>
             </div>
-            {isListCollapsed[id]  && (
+            {isListCollapsed[id] && (
               <div className="created-card-lists">
                 {(todo.checklist || []).map((item, index) => (
                   <label key={index}>
-                    <input type="checkbox" checked={item.done}  onChange={() => handleCheckItem(id, index)} />
+                    <input
+                      type="checkbox"
+                      checked={item.done}
+                      onChange={() => handleCheckItem(id, index)}
+                    />
                     {item.label}
                   </label>
                 ))}
               </div>
             )}
-          
+
             <div className="created-card-buttons">
               <div className="date-btn">
                 {todo.dueDate && (
@@ -163,16 +214,23 @@ const CreatedCard = ({ openModal, globalCollapse   }) => {
                 )}
               </div>
               <div className="section-btn">
-              <button > Backlog</button>
-            <button > Progress</button>
-            <button > Done</button>
-          </div>
+                <button> Backlog</button>
+                <button> Progress</button>
+                <button> Done</button>
+              </div>
             </div>
           </div>
         ))
       ) : (
         <p>No todos found for the user</p>
       )}
+
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onDelete={() => handleDeleteOptionClick()}
+        todoId={deleteTodoId}
+      />
     </>
   );
 };

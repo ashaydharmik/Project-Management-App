@@ -16,11 +16,22 @@ const Cards = () => {
  
 
   const openModal = (todoId) => {
-    setSingleTodo(null);
-    setSelectedTodoId(todoId); // Set the selected todo ID first
+    // Set the selected todo ID first
+    setSelectedTodoId(todoId);
     console.log("id", todoId);
+  
+    // Check if todoId is null or undefined
+    if (todoId !== null && todoId !== undefined) {
+      // If it's an existing todo task, fetch and set the singleTodo data
+      getSingleTodoData();
+    } else {
+      // If it's a new todo task, set singleTodo to null
+      setSingleTodo(null);
+    }
+  
     setModalOpen(true);
   };
+  
 
   const closeModal = () => {
     setModalOpen(false);
@@ -148,8 +159,7 @@ const Cards = () => {
               <CreatedCard
                 openModal={openModal}
                 globalCollapse={isGlobalCollapse}
-               
-                singleTodo={singleTodo}
+                // singleTodo={singleTodo}
               />
             </div>
           </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef  } from "react";
+import React, { useState, useEffect } from "react";
 import { GoDotFill } from "react-icons/go";
 import { IoMdAdd } from "react-icons/io";
 import { ImBin2 } from "react-icons/im";
@@ -6,7 +6,7 @@ import "./todoModal.scss";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import toast, { Toaster } from "react-hot-toast";
-import axios from "axios"
+import axios from "axios";
 const initialChecklistItem = { label: "", done: false };
 
 const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId }) => {
@@ -18,17 +18,13 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId }) => {
   };
   const [todoData, setTodoData] = useState(initialValue);
   const [dueDate, setDueDate] = useState(null);
-  const auth = JSON.parse(localStorage.getItem("user"))
+  const auth = JSON.parse(localStorage.getItem("user"));
 
-
-  const isMounted = useRef(true);
+  
 
   useEffect(() => {
     if (singleTodo) {
       const newDueDate = singleTodo.dueDate ? new Date(singleTodo.dueDate) : null;
-  
-      console.log("Previously set dueDate:", dueDate);
-      console.log("Newly calculated dueDate:", newDueDate);
   
       setTodoData((prevTodoData) => ({
         ...prevTodoData,
@@ -44,17 +40,12 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId }) => {
       // Handle the case when creating a new todo
       setTodoData({
         ...initialValue,
-        checklist: [initialChecklistItem],
+        checklist: [], // Set checklist to an empty array for new todos
       });
   
       setDueDate(null);
     }
   }, [singleTodo, initialChecklistItem]);
-  
-  
-  
-  
-  
   
 
   const handleDueDateChange = (date) => {
@@ -112,79 +103,77 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId }) => {
     });
   };
 
- // TodoModal.js
+  // TodoModal.js
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!todoData.checklist.some((item) => item.label.trim() !== "")) {
-    toast.error("Please add at least one todo task");
-    return;
-  }
-
-  // Display an error message or handle the validation as needed
-  if (!todoData.priority) {
-    toast.error("Please select a priority");
-    return;
-  }
-
-  // Add dueDate to todoData
-  const dataWithDueDate = {
-    ...todoData,
-    dueDate: dueDate,
-  };
-
-  try {
-    const userToken = auth.token;
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${userToken}`,
-    };
-
-    if (selectedTodoId) {
-      // Update existing todo
-      const response = await axios.put(
-        `http://localhost:4000/updateTodo/${selectedTodoId}`,
-        dataWithDueDate,
-        { headers }
-      );
-
-      if (response.status === 200) {
-        console.log("Todo task successfully updated:", response.data);
-        toast.success("Todo task successfully updated");
-
-        // Call the updateTodo function in Cards.js with the updated data
-        updateTodo(response.data.updatedTodo);
-      } else {
-        console.error("Error updating todo task:", response.data.message);
-        toast.error("Error updating todo task");
-      }
-    } else {
-      // Create new todo
-      const response = await axios.post(
-        "http://localhost:4000/addTodo",
-        dataWithDueDate,
-        { headers }
-      );
-
-      if (response.status === 200) {
-        console.log("Todo task successfully created:", response.data);
-        toast.success("Todo task successfully created");
-      } else {
-        console.error("Error creating todo task:", response.data.message);
-        toast.error("Error creating todo task");
-      }
+    if (!todoData.checklist.some((item) => item.label.trim() !== "")) {
+      toast.error("Please add at least one todo task");
+      return;
     }
 
-    // Close the modal after submitting
-    closeModal();
-  } catch (error) {
-    console.error("Error:", error.message);
-    toast.error("Error updating/creating todo task");
-  }
-};
+    // Display an error message or handle the validation as needed
+    if (!todoData.priority) {
+      toast.error("Please select a priority");
+      return;
+    }
 
+    // Add dueDate to todoData
+    const dataWithDueDate = {
+      ...todoData,
+      dueDate: dueDate,
+    };
 
+    try {
+      const userToken = auth.token;
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userToken}`,
+      };
+
+      if (selectedTodoId) {
+        // Update existing todo
+        const response = await axios.put(
+          `http://localhost:4000/updateTodo/${selectedTodoId}`,
+          dataWithDueDate,
+          { headers }
+        );
+
+        if (response.status === 200) {
+          console.log("Todo task successfully updated:", response.data);
+          toast.success("Todo task successfully updated");
+
+          // Call the updateTodo function in Cards.js with the updated data
+          updateTodo(response.data.updatedTodo);
+        } else {
+          console.error("Error updating todo task:", response.data.message);
+          toast.error("Error updating todo task");
+        }
+      } else {
+        // Create new todo
+        const response = await axios.post(
+          "http://localhost:4000/addTodo",
+          dataWithDueDate,
+          { headers }
+        );
+
+        if (response.status === 200) {
+          console.log("Todo task successfully created:", response.data);
+          toast.success("Todo task successfully created");
+        } else {
+          console.error("Error creating todo task:", response.data.message);
+          toast.error("Error creating todo task");
+        }
+      }
+
+      // Close the modal after submitting
+      closeModal();
+    } catch (error) {
+      console.error("Error:", error.message);
+      toast.error("Error updating/creating todo task");
+    }
+  };
 
   return (
     <>
@@ -245,15 +234,12 @@ const handleSubmit = async (e) => {
             </div>
 
             <div className="checklist">
-  <p>
-    Checklist (
-    {
-      todoData.checklist.filter((item) => item.done).length
-    }
-    /{todoData.checklist.length}) <span>*</span>
-  </p>
-</div>
-
+              <p>
+                Checklist (
+                {todoData.checklist.filter((item) => item.done).length}/
+                {todoData.checklist.length}) <span>*</span>
+              </p>
+            </div>
 
             <div className="task-lists">
               {todoData.checklist.map((item, index) => (
@@ -289,7 +275,6 @@ const handleSubmit = async (e) => {
                   selected={dueDate}
                   onChange={handleDueDateChange}
                   placeholderText="Select Due Date"
-                  
                 />
               </div>
               <div className="submit-button">

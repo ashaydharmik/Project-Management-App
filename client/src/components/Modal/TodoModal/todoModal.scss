@@ -60,14 +60,17 @@
           cursor: pointer;
           &:nth-child(2) svg {
             color: red;
+            font-size: 15px;
           }
       
           &:nth-child(3) svg {
             color: #18B0FF;
+            font-size: 15px;
           }
       
           &:nth-child(4) svg {
             color: #63C05B;
+            font-size: 15px;
           }
         }
       }
@@ -97,12 +100,15 @@
     justify-content: flex-start;
     align-items: center;
     margin-bottom: 10px;
+   
+
     input{
         &:nth-child(1) {
               width: 5%;
             margin-right: 5px;
             height: 15px;
             cursor: pointer;
+          accent-color:#17A2B8;
             
           }
           &:nth-child(2){
@@ -187,7 +193,7 @@
             height: 2.3rem;
             cursor: pointer;
             &:nth-child(1){
-                border:1px solid #CF3636;
+                border:2px solid #CF3636;
                  color: #CF3636; 
                  background-color: white;            
             }

@@ -31,21 +31,25 @@
     .dropdown-content {
         position: absolute;
     background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 2px 22px 0px #7E7A7A40;
     border-radius: 4px;
     padding: 0px;
     z-index: 1;
     top: 100%;
-    width: 6rem;
+    width: 7rem;
     right: 0;
     color: black;
     
+    padding: 8px;
         p {
             margin: 0;
-            padding: 8px;
             cursor: pointer;
+            font-weight: 600;
+            font-size: 11px;
+            padding: 6px 0;
             &:hover {
-                background-color: #f0f0f0;
+                color: #CF3636;
+                ;
               }
         }
       }
@@ -71,13 +75,13 @@
     font-weight: 500;
     align-items: center;
     p:last-child{
-        background: #c2c2c2;
+        background: #EEECEC;
     padding: 1px 5px;
     border-radius: 2px;
     cursor: pointer;
     }
 }
-.created-card-lists{
+.created-card-lists {
     margin-top: 1rem;
     display: flex;
     flex-direction: column;
@@ -85,21 +89,53 @@
     align-items: flex-start;
     gap: 1rem;
     overflow-y: auto;
-    label{
-        width: 100%;
-        
-        height: fit-content;
-        border: 1px solid grey;
-        border-radius: 5px;
-       
-        justify-content: flex-start;
-      
-        padding: 0.3rem;
-        input{
-            margin-right: 10px;
-        }
+    flex-wrap: wrap; /* Allow items to wrap to the next line */
+  }
+  
+  label {
+    
+    max-width: 100%; /* Adjust the max-width as needed */
+    height: fit-content;
+    border: 1px solid grey;
+    border-radius: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0.3rem;
+  
+    input {
+      margin-left: 5px;
+      margin-right: 10px;
+      accent-color: #17A2B8;
     }
-}
+  
+    white-space: pre-wrap; /* Allow long text to wrap to the next line */
+    word-break: break-word; /* Break word if it exceeds the max-width */
+  }
+  
+  
+  label {
+    width: 100%;
+    max-width: 300px; /* Adjust the max-width as needed */
+    height: fit-content;
+    border: 1px solid grey;
+    border-radius: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0.3rem;
+  
+    input {
+      margin-left: 5px;
+      margin-right: 10px;
+      accent-color: #17A2B8;
+    }
+  
+    white-space: pre-wrap; /* Allow long text to wrap to the next line */
+    word-wrap: break-word; /* Break word if it exceeds the max-width */
+  }
+  
+  
 .created-card-buttons{
     margin-top: 1rem;
     display: flex;

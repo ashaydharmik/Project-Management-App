@@ -1,7 +1,26 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import "./analytics.scss"
 import { GoDotFill } from "react-icons/go";
+
+import { useGlobal } from '../../Context/Context';
+
 const AnalyticsPage = () => {
+const {highPriority, 
+  fetchHighPriority,
+  fetchModeratePriority,
+  moderatePriority,
+  fetchLowPriority,
+  lowPriority} = useGlobal();
+
+ 
+   
+
+    useEffect(()=>{
+    fetchHighPriority();
+    fetchModeratePriority();
+    fetchLowPriority();
+  },[])
+
   return (
     <>
     <section className='analytics-container'>
@@ -34,15 +53,15 @@ const AnalyticsPage = () => {
       <div className='priority'>
         <p>
           <p><GoDotFill />Low Priority</p>
-          <span>16</span>
+          <span>{lowPriority.lowPriorityCount}</span>
         </p>
         <p>
           <p><GoDotFill />Moderate Priority</p>
-          <span>16</span>
+          <span>{moderatePriority.moderatePriorityCount}</span>
         </p>
         <p>
           <p><GoDotFill />High Priority</p>
-          <span>16</span>
+          <span>{highPriority.highPriorityCount}</span>
         </p>
         <p>
           <p><GoDotFill />Due Date Tasks</p>
