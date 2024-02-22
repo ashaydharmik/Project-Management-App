@@ -5,33 +5,34 @@ import { IoIosArrowUp } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
 import "./createdCard.scss";
 import axios from "axios";
-const CreatedCard = ({ openModal, collapseLists  }) => {
+const CreatedCard = ({ openModal, globalCollapse   }) => {
   const auth = JSON.parse(localStorage.getItem("user"));
   const [singleTodoData, setSingleTodoData] = useState([]);
   const [showDropdown, setShowDropdown] = useState([]);
-  const [isListCollapsed, setListCollapsed] = useState(false);
+  const [isListCollapsed, setListCollapsed] = useState(true);
 
-  const handleShowTodo = () => {
-    const userToken = auth.token;
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${userToken}`,
-    };
-    axios
-      .get("http://localhost:4000/getAllTodo", { headers })
-      .then((res) => {
-        const todoArray = Object.values(res.data.todo);
-        setSingleTodoData(todoArray);
-        console.log(singleTodoData);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
 
   useEffect(() => {
-    handleShowTodo();
-  }, []);
+    const fetchData = async () => {
+      try {
+        const userToken = auth.token;
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        };
+        const response = await axios.get("http://localhost:4000/getAllTodo", { headers });
+        const todoArray = Object.values(response.data.todo);
+        setSingleTodoData(todoArray);
+        // Initialize isListCollapsed with false for each todo item
+        setListCollapsed(Array(todoArray.length).fill(false));
+      } catch (error) {
+        console.error("Error fetching todo data:", error);
+      }
+    };
+    fetchData();
+  }, [auth.token, openModal]);
+ 
+
 
   const handleDropdown = (index) => {
     setShowDropdown((prev) => {
@@ -53,9 +54,52 @@ const CreatedCard = ({ openModal, collapseLists  }) => {
     openModal(todoId);
   };
 
-  const handleToggleLists = () => {
-    setListCollapsed((prev) => !prev);
+  const handleToggleLists = (index, e) => {
+    e.stopPropagation();
+    setListCollapsed((prev) => {
+      const newListCollapsed = [...prev];
+      newListCollapsed[index] = !newListCollapsed[index];
+      return newListCollapsed;
+    });
   };
+  
+
+  useEffect(() => {
+    // Update isListCollapsed when globalCollapse changes
+    setListCollapsed(Array(singleTodoData.length).fill(globalCollapse));
+  }, [globalCollapse, singleTodoData]);
+
+  const handleCheckItem = (cardIndex, itemIndex) => {
+    setSingleTodoData((prevData) => {
+      const updatedData = [...prevData];
+      updatedData[cardIndex].checklist[itemIndex].done = true;
+      return updatedData;
+    });
+
+    // Update the database
+    const updatedTodo = { ...singleTodoData[cardIndex] };
+    updatedTodo.checklist[itemIndex].done = true;
+
+    const userToken = auth.token;
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${userToken}`,
+    };
+
+    axios
+      .put(`http://localhost:4000/updateTodo/${updatedTodo._id}`, updatedTodo, { headers })
+      .then((res) => {
+        console.log(res);
+        // Handle the response or update local state as needed
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+
+
+
 
   return (
     <>
@@ -87,17 +131,20 @@ const CreatedCard = ({ openModal, collapseLists  }) => {
                 {(todo?.checklist?.filter((item) => item.done) || []).length}/
                 {(todo?.checklist || []).length})
               </p>
-              <p onClick={() => handleToggleLists()}>
-              {isListCollapsed ? <IoIosArrowUp /> : <IoIosArrowDown />}
-              </p>
+              
+              <div className="created-card-checklist">
+  <p onClick={(e) => handleToggleLists(id, e)}>
+    {isListCollapsed[id] ? <IoIosArrowUp /> : <IoIosArrowDown />}
+  </p>
+</div>
+
               
             </div>
-           
-            {(!collapseLists || !isListCollapsed) && (
+            {isListCollapsed[id]  && (
               <div className="created-card-lists">
                 {(todo.checklist || []).map((item, index) => (
                   <label key={index}>
-                    <input type="checkbox" checked={item.done} readOnly />
+                    <input type="checkbox" checked={item.done}  onChange={() => handleCheckItem(id, index)} />
                     {item.label}
                   </label>
                 ))}
@@ -116,10 +163,10 @@ const CreatedCard = ({ openModal, collapseLists  }) => {
                 )}
               </div>
               <div className="section-btn">
-                <button>PROGRESS</button>
-                <button>TO-DO</button>
-                <button>DONE</button>
-              </div>
+              <button > Backlog</button>
+            <button > Progress</button>
+            <button > Done</button>
+          </div>
             </div>
           </div>
         ))

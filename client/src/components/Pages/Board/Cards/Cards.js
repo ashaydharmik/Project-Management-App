@@ -11,16 +11,16 @@ const Cards = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedTodoId, setSelectedTodoId] = useState(null);
   const auth = JSON.parse(localStorage.getItem("user"));
-  const [singleTodo, setSingleTodo] = useState(null); 
-  const [collapseLists, setCollapseLists] = useState(false);
+  const [singleTodo, setSingleTodo] = useState(null);
+  const [isGlobalCollapse, setGlobalCollapse] = useState(false);
+ 
 
   const openModal = (todoId) => {
-    setSingleTodo(null)
+    setSingleTodo(null);
     setSelectedTodoId(todoId); // Set the selected todo ID first
     console.log("id", todoId);
     setModalOpen(true);
   };
-  
 
   const closeModal = () => {
     setModalOpen(false);
@@ -44,11 +44,6 @@ const Cards = () => {
       backgroundColor: "rgba(0, 0, 0, 0.5)",
     },
   };
-  
-
-
-  
-
 
   const getSingleTodoData = async () => {
     try {
@@ -75,24 +70,32 @@ const Cards = () => {
       console.error(err);
     }
   };
-  
 
   const handleUpdateTodo = (updatedTodo) => {
-    const userToken = auth.token;
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${userToken}`,
-    };
-  
-    axios
-      .put(`http://localhost:4000/updateTodo/${selectedTodoId}`, updatedTodo, { headers })
-      .then((res) => {
-        console.log(res);
-        // Handle the response or update local state as needed
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // Check if selectedTodoId is not null
+    if (selectedTodoId) {
+      const userToken = auth.token;
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userToken}`,
+      };
+
+      axios
+        .put(
+          `http://localhost:4000/updateTodo/${selectedTodoId}`,
+          updatedTodo,
+          { headers }
+        )
+        .then((res) => {
+          console.log(res);
+          // Handle the response or update local state as needed
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      console.error("SelectedTodoId is null");
+    }
   };
 
   useEffect(() => {
@@ -103,6 +106,13 @@ const Cards = () => {
       console.log("No Todo ID found");
     }
   }, [selectedTodoId]);
+
+  const handleGlobalCollapse = () => {
+    setGlobalCollapse(!isGlobalCollapse);
+  };
+
+  
+
   return (
     <>
       <div className="cards-container">
@@ -121,46 +131,45 @@ const Cards = () => {
             <div className="card-title">
               <p>Backlog</p>
               <p>
-                <VscCollapseAll onClick={() => setCollapseLists(!collapseLists)}/>
+                <VscCollapseAll onClick={handleGlobalCollapse} />
               </p>
             </div>
-            <div className="card">
-             
-            </div>
+            <div className="card"></div>
           </div>
           <div className="card-box">
             <div className="card-title">
               <p>To do</p>
               <p>
-                <IoMdAdd onClick={() => openModal(null)}/>
-                <VscCollapseAll onClick={() => setCollapseLists(!collapseLists)}/>
+                <IoMdAdd onClick={() => openModal(null)} />
+                <VscCollapseAll onClick={handleGlobalCollapse} />
               </p>
             </div>
             <div className="card">
-              <CreatedCard  openModal={openModal} collapseLists={collapseLists}/>
+              <CreatedCard
+                openModal={openModal}
+                globalCollapse={isGlobalCollapse}
+               
+                singleTodo={singleTodo}
+              />
             </div>
           </div>
           <div className="card-box">
             <div className="card-title">
               <p>In progress</p>
               <p>
-                <VscCollapseAll onClick={() => setCollapseLists(!collapseLists)}/>
+                <VscCollapseAll onClick={handleGlobalCollapse} />
               </p>
             </div>
-            <div className="card">
-              
-            </div>
+            <div className="card"></div>
           </div>
           <div className="card-box">
             <div className="card-title">
               <p>Done</p>
               <p>
-                <VscCollapseAll onClick={() => setCollapseLists(!collapseLists)}/>
+                <VscCollapseAll onClick={handleGlobalCollapse} />
               </p>
             </div>
-            <div className="card">
-             
-            </div>
+            <div className="card"></div>
           </div>
         </div>
       </div>
@@ -172,7 +181,12 @@ const Cards = () => {
         style={customStyles}
         shouldCloseOnOverlayClick={false}
       >
-        <TodoModal closeModal={closeModal}  updateTodo={handleUpdateTodo} selectedTodoId={selectedTodoId} singleTodo={singleTodo}/>
+        <TodoModal
+          closeModal={closeModal}
+          updateTodo={handleUpdateTodo}
+          selectedTodoId={selectedTodoId}
+          singleTodo={singleTodo}
+        />
       </Modal>
     </>
   );
