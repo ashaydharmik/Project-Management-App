@@ -14,7 +14,7 @@ function App() {
 
           <Route element={<PrivateComponent />}>
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/live/:id" element={<LivePage />} />
+            <Route path="/live-page/:id" element={<LivePage />} />
             {/* <Route path="/todoModal/:id" element={<TodoModal/>}/> */}
           </Route>
   

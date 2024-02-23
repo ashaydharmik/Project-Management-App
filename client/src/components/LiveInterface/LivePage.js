@@ -2,42 +2,43 @@ import React, { useEffect, useState } from 'react'
 import { GoDotFill } from "react-icons/go";
 import logo from "../../assets/logo.png";
 import "./livePage.scss"
+import { useGlobal } from '../Context/Context';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+
 const LivePage = () => {
-    const [todoData, setTodoData]= useState([]);
-    const auth = JSON.parse(localStorage.getItem("user"));
-    const { todoId } = useParams();
+  const [todoData, setTodoData] = useState([])
+ const {id} = useParams();
 
-   
+const fetchLivePageData=()=>{
+  console.log('livePageDataId:', id);
+  axios.get(`http://localhost:4000/live-page/${id}`)
+    .then((res)=>{
+      console.log(res.data.availableTodo)
+      setTodoData(res.data.availableTodo)
+    })
+    .catch(err=>{
+      console.log(err)
+    })
+  } 
 
-    const singleTodoCard = () => {
-        const userToken = auth.token;
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${userToken}`,
-        };
-      
-        axios
-          .get(`http://localhost:4000/getSingleTodo/${todoId}`, { headers })
-          .then((response) => {
-            // Check if the response has a 'data' property and a 'todo' property
-            if (response.data && response.data.todo) {
-              setTodoData(response.data.todo);
-            } else {
-              console.error("Invalid response format:", response);
-            }
-          })
-          .catch((error) => {
-            console.error("Error fetching todo data:", error);
-          });
-      };
-      
 
-    useEffect(()=>{
-        singleTodoCard();
-    },[])
+  useEffect(() => {
+    fetchLivePageData();
+  }, [id]); 
 
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case 'low':
+        return '#63C05B'; // or any color you want for low priority
+      case 'moderate':
+        return '#18B0FF'; // or any color you want for moderate priority
+      case 'high':
+        return 'red'; // or any color you want for high priority
+      default:
+        return 'black'; 
+    }
+  };
 
   return (
     <>
@@ -49,28 +50,40 @@ const LivePage = () => {
         <div className='todo-container'>
             <div className='todo-box'>
                 <div className='priority-box'>
-                <p><GoDotFill />Backlog Tasks</p>
+                <p><GoDotFill style={{ color: getPriorityColor(todoData.priority) }}/></p>
+                <p>{todoData.priority}</p>  
+               
                 </div>
                 <div className='todo-name'>
-                    <p>Hero Sction</p>
+                    <p>{todoData.taskName}</p>
                 </div>
                 <div className='checklist-box'>
-                    <p>Checklist (0/3)</p>
+                    <p>Checklist (
+                {(todoData?.checklist?.filter((item) => item.done) || []).length}/
+                {(todoData?.checklist || []).length})</p>
                 </div>
                 <div className='todo-lists'>
-                    <label><input type='checkbox'/>Done Task</label>
-                    <label><input type='checkbox'/>Done Task</label>
-                    <label><input type='checkbox'/>Done Task</label>
-                    <label><input type='checkbox'/>Done Task</label>
-                    <label><input type='checkbox'/>Done Task</label>
-                    <label><input type='checkbox'/>Done Task</label>
-                    <label><input type='checkbox'/>Done Task</label>
-                    <label><input type='checkbox'/>Done Task</label>
+                {(todoData.checklist || []).map((item, index) => (
+                  <label key={index}>
+                    <input
+                      type="checkbox"
+                      checked={item.done}
+                    />
+                    {item.label}
+                  </label>
+                ))}
                    
                 </div>
                 <div className='date-box'>
                     <p>Due Date</p>
-                    <p>Feb 10th</p>
+                    {todoData.dueDate && (
+                  <p id="dateBtn">
+                    {new Date(todoData.dueDate).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </p>
+                )}
                 </div>
             </div>
         </div>

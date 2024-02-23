@@ -17,7 +17,7 @@ router.get("/currentUser",token, currentUser);
 
 router.post("/addTodo",token, addTodo); 
 
-router.get("/getSingleTodo/:_id",token, fetchRecentTodo); 
+router.get("/live-page/:_id", fetchRecentTodo); 
 
 router.get("/getAllTodo",token, getAllTodoCreated); 
 

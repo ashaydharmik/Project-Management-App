@@ -6,7 +6,8 @@ import { IoIosArrowDown } from "react-icons/io";
 import "./createdCard.scss";
 import axios from "axios";
 import DeleteModal from "../../../Modal/DeleteModal/DeleteModal";
-import { useNavigate } from "react-router-dom";
+import { useGlobal } from "../../../Context/Context";
+
 
 
 const CreatedCard = ({ openModal, globalCollapse }) => {
@@ -16,7 +17,7 @@ const CreatedCard = ({ openModal, globalCollapse }) => {
   const [isListCollapsed, setListCollapsed] = useState(true);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteTodoId, setDeleteTodoId] = useState(null);
-  const navigate = useNavigate()
+const {handleShareOptionClick} = useGlobal()
   
   useEffect(() => {
     const fetchData = async () => {
@@ -132,20 +133,7 @@ const CreatedCard = ({ openModal, globalCollapse }) => {
   };
   
 ///share link
-  const handleShareOptionClick = async (todoId) => {
-    try {
-      let fullUrl = `${window.location.origin}/getSingleTodo/${todoId}`;
 
-      await navigator.clipboard.writeText(fullUrl);
-      console.log(fullUrl);
-      console.log("URL is copied!");
-      navigate(`/live/${todoId}`)
-    } catch (err) {
-      // Log the error
-      console.error("Error copying to clipboard:", err);
-      console.log("URL is not copied");
-    }
-  };
   
 
   return (

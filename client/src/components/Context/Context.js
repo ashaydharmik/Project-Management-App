@@ -13,6 +13,23 @@ const AppProvider = ({ children }) => {
  const [lowPriority, setLowPriority] = useState([0])
 
 
+
+
+ const handleShareOptionClick = async (todoId) => {
+
+  try {
+    let fullUrl = `${window.location.origin}/live-page/${todoId}`;
+    await navigator.clipboard.writeText(fullUrl);
+    console.log(fullUrl);
+    alert("URL copied to clipboard!");
+  } catch (err) {
+    // Log the error
+    console.error("Error copying to clipboard:", err);
+    console.log("URL is not copied");
+  }
+};
+
+
  const fetchHighPriority=()=>{
   const userToken = auth.token;
   const headers = {
@@ -106,7 +123,9 @@ const handleSettingsClick =()=>{
         fetchModeratePriority,
         moderatePriority,
         fetchLowPriority,
-        lowPriority
+        lowPriority,
+        handleShareOptionClick,
+
       }}
     >
       {children}
