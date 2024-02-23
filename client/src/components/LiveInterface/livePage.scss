@@ -72,12 +72,12 @@
         font-size: 1.5rem;
         font-weight: 600;
         max-width: 100%;
-       
+       width: 100%;
         margin-bottom: 10px;
         align-items: center;
         display: flex;
         /* place-items: center; */
-        align-items: center;
+    justify-content: flex-start;
         margin-bottom: 1rem;
         p{
           white-space: nowrap;
@@ -132,35 +132,9 @@
           word-break: break-word;
           input {
             border-radius: 5px;
-            width: 80px;
+            // font-size: 10px;
             height: fit-content;
             accent-color: #17A2B8;
-            appearance: none; /* Hide default checkbox appearance */
-            outline: none; /* Remove default focus style */
-      @include md{
-        width: 35px;
-        
-      }
-            &:checked {
-              background: #17A2B8;
-              
-            }
-      
-            &::before {
-              content: '\2714'; /* Unicode character for checkmark */
-              font-size: 15px;
-              color: white; /* Set the checkmark color to white */
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              height: 100%;
-              font-weight: bolder;
-              border: 1px solid #bebebe;
-              border-radius: 5px;
-              @include md{
-                font-size: 12px;
-              }
-            }
           }
         }
       

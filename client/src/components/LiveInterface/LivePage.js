@@ -75,14 +75,16 @@ const fetchLivePageData=()=>{
                    
                 </div>
                 <div className='date-box'>
-                    <p>Due Date</p>
                     {todoData.dueDate && (
+                      <>
+                    <p>Due Date</p>
                   <p id="dateBtn">
                     {new Date(todoData.dueDate).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
                     })}
                   </p>
+                  </>
                 )}
                 </div>
             </div>
