@@ -30,6 +30,7 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
     password: hashedPassword,
     confirmPassword: await bcrypt.hash(confirmPassword, 10),
+    registrationDate: new Date(),
   });
 
   if (user) {
@@ -69,6 +70,7 @@ const loginUser = asyncHandler(async (req, res) => {
       message: "User Successfully logIn",
       id: user.id,
       userName: user.name,
+      registrationDate: user.registrationDate,
       token,
     });
   } else {
@@ -111,6 +113,7 @@ const updatePassword = asyncHandler(async (req, res) => {
     message: "Password successfully updated",
     _id: user.id,
     userName: user.name,
+    lastLoginDate: new Date(), 
     token,
   });
 });
@@ -133,6 +136,8 @@ const currentUser = asyncHandler(async (req, res) => {
 
     res.status(200).json({
       userName: user.name,
+       registrationDate: user.registrationDate,
+      lastLoginDate: new Date()
     });
   } catch (error) {
     console.error("Error fetching current user:", error);

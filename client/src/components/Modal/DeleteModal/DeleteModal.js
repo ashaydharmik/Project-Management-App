@@ -2,7 +2,8 @@ import React from 'react'
 import Modal from 'react-modal';
 import "./deleteModal.scss"
 import axios from 'axios';
-const DeleteModal = ({ isOpen, onClose, onDelete, todoId  }) => {
+import toast, { Toaster } from "react-hot-toast";
+const DeleteModal = ({ isOpen, onClose, todoId  }) => {
     const auth = JSON.parse(localStorage.getItem("user"));
     const customStyles = {
         content: {
@@ -34,7 +35,8 @@ const DeleteModal = ({ isOpen, onClose, onDelete, todoId  }) => {
           .then((response) => {
             // Handle successful deletion, update state, etc.
             console.log('Todo deleted successfully:', response.data);
-            onClose(); // Close the modal
+            onClose(); 
+            toast.success("Todo successfully Deleted")
           })
           .catch((error) => {
             // Handle error
@@ -43,6 +45,7 @@ const DeleteModal = ({ isOpen, onClose, onDelete, todoId  }) => {
       };
 
   return (
+    <>
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
@@ -56,6 +59,17 @@ const DeleteModal = ({ isOpen, onClose, onDelete, todoId  }) => {
         <button onClick={onClose} id='cancel-todo'>Cancel</button>
       </div>
     </Modal>
+    <Toaster
+        toastOptions={{
+          style: {
+            background: "#363636",
+            color: "#fff",
+            width: "350px",
+            fontSize: "18px",
+          },
+        }}
+      />
+    </>
   );
 };
 

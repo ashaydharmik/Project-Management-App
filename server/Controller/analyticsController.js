@@ -23,4 +23,28 @@ const lowPriority = asyncHandler(async(req, res) => {
 })
 
 
-module.exports = {highPriority, moderatePriority, lowPriority};
+const backlogTodoTask = asyncHandler(async(req, res) => {
+
+    const backlogTodoCount = await Todo.countDocuments({ section: 'backlog' });
+    res.status(200).json({backlogTodoCount });
+})
+
+const progressTodoTask = asyncHandler(async(req, res) => {
+
+    const progressTodoCount = await Todo.countDocuments({ section: 'progress' });
+    res.status(200).json({progressTodoCount });
+})
+
+const currentTodoTask = asyncHandler(async(req, res) => {
+
+    const currentTodoCount = await Todo.countDocuments({ section: 'todo' });
+    res.status(200).json({currentTodoCount });
+})
+
+const completedTodoTask = asyncHandler(async(req, res) => {
+
+    const completedTodoCount = await Todo.countDocuments({ section: 'done' });
+    res.status(200).json({completedTodoCount });
+})
+
+module.exports = {highPriority, moderatePriority, lowPriority, backlogTodoTask, progressTodoTask, currentTodoTask, completedTodoTask};

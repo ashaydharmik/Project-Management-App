@@ -4,7 +4,7 @@ const { format } = require("date-fns");
 const User = require("../Models/userModel")
 //create todo task
 const addTodo = asyncHandler(async(req, res) => {
-  const { taskName, priority, checklist, dueDate } = req.body;
+  const { taskName, priority, checklist, dueDate, section } = req.body;
 
   // Ensure that the user is authenticated (check your authentication middleware)
   if (!req.user) {
@@ -38,12 +38,15 @@ const addTodo = asyncHandler(async(req, res) => {
   }
 
   const newTodo = await Todo.create({
+    section,
     taskName,
     priority,
     checklist,
     dueDate: dueDate || null,
     user: user._id,
   });
+
+  console.log(newTodo)
 
   if (newTodo) {
     const formattedDueDate = newTodo.dueDate ? format(newTodo.dueDate, "MM/dd/yyyy") : null;
@@ -53,6 +56,7 @@ const addTodo = asyncHandler(async(req, res) => {
       taskName: newTodo.taskName,
       checklist: newTodo.checklist,
       dueDate: formattedDueDate,
+      section: newTodo.section,
       user: user._id,
     });
   } else {
@@ -110,7 +114,7 @@ const updateTodo = asyncHandler(async(req,res)=>{
       }
 
   const updatedTodo = await Todo.findByIdAndUpdate(_id,{
-    taskName, priority, checklist, dueDate
+    taskName, priority, checklist, dueDate, section
   },
   {new:true}
   )
@@ -146,5 +150,21 @@ const deleteTodo=asyncHandler(async(req,res)=>{
 })
 
 
+//move to different sections
+const moveToSection=asyncHandler(async(req,res)=>{
+  const { todoId } = req.params;
+  const { section } = req.body;
 
-module.exports = {addTodo, fetchRecentTodo, getAllTodoCreated, updateTodo , deleteTodo};
+  try {
+    const updatedTodo = await Todo.findByIdAndUpdate(todoId, { section }, { new: true });
+    res.status(200).json({ updatedTodo });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+
+
+module.exports = {addTodo, fetchRecentTodo, getAllTodoCreated, updateTodo , deleteTodo, moveToSection};

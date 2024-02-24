@@ -76,6 +76,7 @@ useEffect(()=>{
         toast.success(response.data.message);
         console.log("User password updated");
         console.log(response.data.message);
+       setUserData(initialValue)
       }
     } catch (error) {
       console.log("Error during password update:", error);

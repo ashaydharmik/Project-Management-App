@@ -165,8 +165,9 @@
     .section-btn{
         display: flex;
         justify-content: space-between;
+        align-items: center;
         width: 75%;
-      
+        // gap: 10px;
     }
 }
 }

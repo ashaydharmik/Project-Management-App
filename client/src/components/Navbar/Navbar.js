@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./navbar.scss";
 import logo from "../../assets/logo.png";
 import board from "../../assets/board-img.png";
@@ -6,12 +6,27 @@ import analytics from "../../assets/analytics-img.png";
 import setting from "../../assets/setting-img.png";
 import { IoLogOutOutline } from "react-icons/io5";
 import { useGlobal } from "../Context/Context";
+import LogoutModal from "../Modal/LogoutModal/LogoutModal";
+
+
 const Navbar = () => {
-  const { handleLogout ,
+  const { 
     handleBoardClick,
     handleAnalyticsClick,
     handleSettingsClick,
     activeNavPage} = useGlobal();
+    const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
+    const handleLogoutClick = () => {
+      setIsLogoutModalOpen(true);
+    };
+  
+    const handleCloseLogoutModal = () => {
+
+      setIsLogoutModalOpen(false);
+    };
+   
+
   return (
     <>
       <div className="nav-items-container">
@@ -35,11 +50,12 @@ const Navbar = () => {
         </div>
       </div>
       <div className="logout-container">
-        <p onClick={handleLogout}>
+        <p onClick={handleLogoutClick}> 
           <IoLogOutOutline />
           <span>Log out</span>
         </p>
       </div>
+      <LogoutModal isOpen={isLogoutModalOpen} onClose={handleCloseLogoutModal} />
     </>
   );
 };

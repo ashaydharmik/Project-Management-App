@@ -8,17 +8,24 @@ import axios from "axios";
 import DeleteModal from "../../../Modal/DeleteModal/DeleteModal";
 import { useGlobal } from "../../../Context/Context";
 
-
-
-const CreatedCard = ({ openModal, globalCollapse }) => {
+const CreatedCard = ({ openModal, globalCollapse, onMove, todo}) => {
   const auth = JSON.parse(localStorage.getItem("user"));
   const [singleTodoData, setSingleTodoData] = useState([]);
   const [showDropdown, setShowDropdown] = useState([]);
   const [isListCollapsed, setListCollapsed] = useState(true);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteTodoId, setDeleteTodoId] = useState(null);
-const {handleShareOptionClick} = useGlobal()
+  const { handleShareOptionClick } = useGlobal();
+   
+
+  const handleMoveCardInSection = (section) => {
+    // Call the moveCard prop to notify the parent component about the card movement
+    onMove(section, todo._id);
+  };
+
+ 
   
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -112,29 +119,25 @@ const {handleShareOptionClick} = useGlobal()
       newShowDropdown[index] = false;
       return newShowDropdown;
     });
-  
+
     // Set the deleteTodoId and open the delete modal
     setDeleteTodoId(todoId);
-    console.log("deleted todo id :", todoId)
+    console.log("deleted todo id :", todoId);
     setDeleteModalOpen(true);
   };
-  
+
   const getPriorityColor = (priority) => {
     switch (priority) {
-      case 'low':
-        return '#63C05B'; // or any color you want for low priority
-      case 'moderate':
-        return '#18B0FF'; // or any color you want for moderate priority
-      case 'high':
-        return 'red'; // or any color you want for high priority
+      case "low":
+        return "#63C05B"; // or any color you want for low priority
+      case "moderate":
+        return "#18B0FF"; // or any color you want for moderate priority
+      case "high":
+        return "red"; // or any color you want for high priority
       default:
-        return 'black'; 
+        return "black";
     }
   };
-  
-///share link
-
-  
 
   return (
     <>
@@ -143,7 +146,7 @@ const {handleShareOptionClick} = useGlobal()
           <div className="cards">
             <div className="created-card-heading">
               <p>
-                <GoDotFill style={{ color: getPriorityColor(todo.priority) }}/>
+                <GoDotFill style={{ color: getPriorityColor(todo.priority) }} />
                 {todo.priority}
               </p>
               <p onClick={() => handleDropdown(id)}>
@@ -202,15 +205,15 @@ const {handleShareOptionClick} = useGlobal()
                 )}
               </div>
               <div className="section-btn">
-                <button> Backlog</button>
-                <button> Progress</button>
-                <button> Done</button>
+              <button onClick={()=> handleMoveCardInSection("backlog")}>Backlog</button>
+    <button onClick={()=> handleMoveCardInSection("progress")}>Progress</button>
+    <button onClick={()=> handleMoveCardInSection("done")}>Done</button>
               </div>
             </div>
           </div>
         ))
       ) : (
-        <p>No todos found for the user</p>
+        <p>Please Create some Todos...</p>
       )}
 
       <DeleteModal
