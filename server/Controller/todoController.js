@@ -99,33 +99,31 @@ const getAllTodoCreated = asyncHandler(async (req, res) => {
 
 //update todo task
 const updateTodo = asyncHandler(async(req,res)=>{
-  const { taskName, priority, checklist, dueDate} = req.body
-      const {_id} = req.params;
+  const { taskName, priority, checklist, dueDate, section } = req.body; // Make sure to include 'section' in the destructuring
+  const { _id } = req.params;
      
-      if (!req.user) {
-        res.status(401).json({ message: "Unauthorized" });
-        return;
-      }
-
-      const availableTodo = await Todo.findOne({ _id})
-      if(!availableTodo){
-          res.status(404)
-          throw new Error("Todo not exists")
-      }
-
-  const updatedTodo = await Todo.findByIdAndUpdate(_id,{
-    taskName, priority, checklist, dueDate, section
-  },
-  {new:true}
-  )
-  if(updatedTodo){
-      res.status(200).json({message:"Product Updated Successfully", updatedTodo: updatedTodo})
-  }else{
-      res.status(400)
-      throw new Error("Invalid Data")
+  if (!req.user) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
   }
-  
-})
+
+  const availableTodo = await Todo.findOne({ _id });
+  if(!availableTodo){
+    res.status(404).json({ message: "Todo not exists" });
+    return;
+  }
+
+  const updatedTodo = await Todo.findByIdAndUpdate(_id, {
+    taskName, priority, checklist, dueDate, section
+  }, { new: true });
+
+  if(updatedTodo){
+    res.status(200).json({ message: "Product Updated Successfully", updatedTodo });
+  } else {
+    res.status(400).json({ message: "Invalid Data" });
+  }
+});
+
 
 //delete Todo 
 const deleteTodo=asyncHandler(async(req,res)=>{
@@ -152,17 +150,25 @@ const deleteTodo=asyncHandler(async(req,res)=>{
 
 //move to different sections
 const moveToSection=asyncHandler(async(req,res)=>{
-  const { todoId } = req.params;
-  const { section } = req.body;
+    const { _id } = req.params;
+    const { section } = req.body;
 
-  try {
-    const updatedTodo = await Todo.findByIdAndUpdate(todoId, { section }, { new: true });
-    res.status(200).json({ updatedTodo });
-  } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+    try {
+        const todo = await Todo.findById({_id});
+
+        if (!todo) {
+            res.status(404);
+            throw new Error('Todo not found');
+        }
+
+        todo.section = section;
+        const updatedTodo = await todo.save();
+
+        res.status(200).json({ success: true, data: updatedTodo });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
 });
-
 
 
 

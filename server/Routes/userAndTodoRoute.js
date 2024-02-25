@@ -38,7 +38,7 @@ router.get("/currentTodoTask", token, currentTodoTask)
 router.get("/completedTodoTask", token, completedTodoTask)
 
 //update to different todo task route
-router.put("/updateSection/:todoId",token, moveToSection);  //done
+router.put("/moveToSection/:_id",token, moveToSection);  //done
 
 router.use(errorHandler);
 

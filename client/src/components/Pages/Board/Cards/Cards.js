@@ -6,6 +6,7 @@ import CreatedCard from "../CreatedCard/CreatedCard";
 import Modal from "react-modal";
 import TodoModal from "../../../Modal/TodoModal/TodoModal";
 import axios from "axios";
+
 const Cards = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedTodoId, setSelectedTodoId] = useState(null);
@@ -13,34 +14,20 @@ const Cards = () => {
   const [singleTodo, setSingleTodo] = useState(null);
   const [isGlobalCollapse, setGlobalCollapse] = useState(false);
   const [todos, setTodos] = useState([]);
-  const [allTodoData, setAllTodoData] = useState([]);
+  const [section, setSection] = useState(null);
 
-  // const [backlogCards, setBacklogCards] = useState([]);
-  // const [progressCards, setProgressCards] = useState([]);
-  // const [doneCards, setDoneCards] = useState([]);
-
-  const openModal = (todoId) => {
-    console.log("Before setting todo ID:", todoId);
-
-    // Set the selected todo ID and log the updated value in the callback
+  const openModal = (todoId, section) => {
     setSelectedTodoId((prevTodoId) => {
-      console.log("After setting todo ID:", prevTodoId);
-
-      // Check if todoId is null or undefined
       if (todoId !== null && todoId !== undefined) {
-        // If it's an existing todo task, fetch and set the singleTodo data
         getSingleTodoData();
         console.log("Fetching singleTodo data...");
       } else {
-        // If it's a new todo task, set singleTodo to null
-        console.log("Setting singleTodo to null");
         setSingleTodo(null);
       }
 
-      // Even though `setSelectedTodoId` is asynchronous, the modal state will be set immediately
       setModalOpen(true);
+      setSection(section);
 
-      // Return the updated value to be stored in the state
       return todoId;
     });
   };
@@ -82,7 +69,6 @@ const Cards = () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${userToken}`,
       };
-      // console.log(selectedTodoId)
       const response = await axios.get(
         `http://localhost:4000/live-page/${selectedTodoId}`,
         { headers }
@@ -95,7 +81,6 @@ const Cards = () => {
   };
 
   const handleUpdateTodo = (updatedTodo) => {
-    // Check if selectedTodoId is not null
     if (selectedTodoId) {
       const userToken = auth.token;
       const headers = {
@@ -111,7 +96,6 @@ const Cards = () => {
         )
         .then((res) => {
           console.log(res);
-          // Handle the response or update local state as needed
         })
         .catch((err) => {
           console.log(err);
@@ -132,44 +116,51 @@ const Cards = () => {
         const response = await axios.get("http://localhost:4000/getAllTodo", {
           headers,
         });
-        const todoArray = Object.values(response.data.todo);
-        console.log(response.data);
-        setTodos(todoArray);
-        // setAllTodo(todoArray);
-        // Initialize isListCollapsed with false for each todo item
-        // setListCollapsed(Array(todoArray.length).fill(false));
+
+        console.log("API Response:", response.data);
+
+        const sections = Object.keys(response.data);
+        let allTodos = [];
+
+        sections.forEach((section) => {
+          const todosInSection = response.data[section];
+          allTodos = allTodos.concat(todosInSection);
+        });
+
+        console.log("All Todos:", allTodos);
+
+        setTodos(allTodos);
       } catch (error) {
         console.error("Error fetching todo data:", error);
       }
     };
-    fetchData();
-  }, []);
 
-  // useEffect(() => {
-  //   if (selectedTodoId) {
-  //     console.log("Todo ID found:", selectedTodoId);
-  //     getSingleTodoData();
-  //   } else {
-  //     console.log("No Todo ID found");
-  //   }
-  // }, [selectedTodoId]);
+    fetchData();
+  }, [auth.token]); // Include auth.token as a dependency for useEffect
 
   const handleGlobalCollapse = () => {
     setGlobalCollapse(!isGlobalCollapse);
   };
 
-  const moveCard = async (todoId,  targetColumn) => {
+  const moveCard = async (todoId, targetColumn) => {
     const userToken = auth.token;
     const headers = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${userToken}`,
     };
+  
     try {
-      await axios.put(`http://localhost:4000/updateTodo/${todoId}`,
-      { section: targetColumn }, // Wrap the data in an object
-      { headers }
+      // Retrieve the complete todo object
+      const todoToMove = todos.find((todo) => todo._id === todoId);
+  
+      // Update the section property in the backend
+      await axios.put(
+        `http://localhost:4000/updateTodo/${todoId}`,
+        { ...todoToMove, section: targetColumn },
+        { headers }
       );
-      console.log(todoId);
+  
+      // Update the section property in the local state
       setTodos((prevTodos) => {
         return prevTodos.map((todo) => {
           if (todo._id === todoId) {
@@ -182,6 +173,7 @@ const Cards = () => {
       console.error("Error moving todo:", error);
     }
   };
+  
 
   return (
     <>
@@ -205,11 +197,21 @@ const Cards = () => {
               </p>
             </div>
             <div className="card backlog-section">
-              {todos
-                .filter((todo) => todo.section === "backlog")
-                .map((todo) => (
-                  <CreatedCard key={todo._id} todo={todo} onMove={moveCard} />
-                ))}
+              {todos.length > 0 ? (
+                todos
+                  .filter((todo) => todo.section === "backlog")
+                  .map((todo) => (
+                    <CreatedCard
+                      key={todo._id}
+                      todo={todo}
+                      onMove={moveCard}
+                      globalCollapse={handleGlobalCollapse}
+                      openModal={() => openModal(todo._id, todo.section)}
+                    />
+                  ))
+              ) : (
+                <p>Loading...</p>
+              )}
             </div>
           </div>
           <div className="card-box">
@@ -221,50 +223,76 @@ const Cards = () => {
               </p>
             </div>
             <div className="card todo-section">
-              {todos
-                .filter((todo) => todo.section === "todo")
-                .map((todo) => (
-                  <CreatedCard
-                    key={todo._id}
-                    todo={todo}
-                    onMove={moveCard}
-                    openModal={openModal}
-                    globalCollapse={isGlobalCollapse}
-                  />
-                ))}
-             
+              {todos.length > 0 ? (
+                todos
+                  .filter((todo) => todo.section === "todo")
+                  .map((todo) => (
+                    <CreatedCard
+                      key={todo._id}
+                      todo={todo}
+                      onMove={moveCard}
+                      globalCollapse={handleGlobalCollapse}
+                      openModal={() => openModal(todo._id, todo.section)}
+                    />
+                  ))
+              ) : (
+                <p>Loading...</p>
+              )}
             </div>
           </div>
           <div className="card-box">
             <div className="card-title">
-              <p>In progress</p>
+              <p>In Progress</p>
               <p>
+                <IoMdAdd onClick={() => openModal(null)} />
                 <VscCollapseAll onClick={handleGlobalCollapse} />
               </p>
             </div>
-            <div className="card progress-section">
-              {todos
-                .filter((todo) => todo.section === "progress")
-                .map((todo) => (
-                  <CreatedCard key={todo._id} todo={todo} onMove={moveCard} />
-                ))}
+            <div className="card todo-section">
+              {todos.length > 0 ? (
+                todos
+                  .filter((todo) => todo.section === "progress")
+                  .map((todo) => (
+                    <CreatedCard
+                      key={todo._id}
+                      todo={todo}
+                      onMove={moveCard}
+                      globalCollapse={handleGlobalCollapse}
+                      openModal={() => openModal(todo._id, todo.section)}
+                    />
+                  ))
+              ) : (
+                <p>Loading...</p>
+              )}
             </div>
           </div>
           <div className="card-box">
             <div className="card-title">
               <p>Done</p>
               <p>
+                <IoMdAdd onClick={() => openModal(null)} />
                 <VscCollapseAll onClick={handleGlobalCollapse} />
               </p>
             </div>
-            <div className="card done-section">
-              {todos
-                .filter((todo) => todo.section === "done")
-                .map((todo) => (
-                  <CreatedCard key={todo._id} todo={todo} onMove={moveCard} />
-                ))}
+            <div className="card todo-section">
+              {todos.length > 0 ? (
+                todos
+                  .filter((todo) => todo.section === "done")
+                  .map((todo) => (
+                    <CreatedCard
+                      key={todo._id}
+                      todo={todo}
+                      onMove={moveCard}
+                      globalCollapse={handleGlobalCollapse}
+                      openModal={() => openModal(todo._id, todo.section)}
+                    />
+                  ))
+              ) : (
+                <p>Loading...</p>
+              )}
             </div>
           </div>
+          {/* Repeat the above structure for other sections */}
         </div>
       </div>
 
@@ -280,6 +308,7 @@ const Cards = () => {
           updateTodo={handleUpdateTodo}
           selectedTodoId={selectedTodoId}
           singleTodo={singleTodo}
+          section={section}
         />
       </Modal>
     </>

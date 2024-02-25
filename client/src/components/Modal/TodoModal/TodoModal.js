@@ -9,7 +9,7 @@ import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 const initialChecklistItem = { label: "", done: false };
 
-const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId }) => {
+const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId,section  }) => {
   const initialValue = {
     taskName: "",
     priority: "",
@@ -105,6 +105,7 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId }) => {
 
   // TodoModal.js
 
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -113,16 +114,15 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId }) => {
       return;
     }
 
-    // Display an error message or handle the validation as needed
     if (!todoData.priority) {
       toast.error("Please select a priority");
       return;
     }
 
-    // Add dueDate to todoData
-    const dataWithDueDate = {
+    const dataWithDueDateAndSection = {
       ...todoData,
       dueDate: dueDate,
+      section: section, // Pass the section information
     };
 
     try {
@@ -133,47 +133,44 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId }) => {
       };
 
       if (selectedTodoId) {
-        // Update existing todo
         const response = await axios.put(
           `http://localhost:4000/updateTodo/${selectedTodoId}`,
-          dataWithDueDate,
+          dataWithDueDateAndSection,
           { headers }
         );
 
         if (response.status === 200) {
           console.log("Todo task successfully updated:", response.data);
           toast.success("Todo task successfully updated");
-
-          // Call the updateTodo function in Cards.js with the updated data
           updateTodo(response.data.updatedTodo);
         } else {
           console.error("Error updating todo task:", response.data.message);
           toast.error("Error updating todo task");
         }
       } else {
-        // Create new todo
         const response = await axios.post(
           "http://localhost:4000/addTodo",
-          dataWithDueDate,
+          dataWithDueDateAndSection,
           { headers }
         );
 
         if (response.status === 200) {
           console.log("Todo task successfully created:", response.data);
           toast.success("Todo task successfully created");
+          updateTodo(response.data.createdTodo);
         } else {
           console.error("Error creating todo task:", response.data.message);
           toast.error("Error creating todo task");
         }
       }
 
-      // Close the modal after submitting
       closeModal();
     } catch (error) {
       console.error("Error:", error.message);
       toast.error("Error updating/creating todo task");
     }
   };
+  
 
   return (
     <>
