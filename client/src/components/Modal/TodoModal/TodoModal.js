@@ -9,7 +9,7 @@ import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 const initialChecklistItem = { label: "", done: false };
 
-const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId,section  }) => {
+const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId,section , fetchData  }) => {
   const initialValue = {
     taskName: "",
     priority: "",
@@ -124,6 +124,9 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId,section 
       dueDate: dueDate,
       section: section, // Pass the section information
     };
+    
+    const userId = JSON.parse(localStorage.getItem("user")).id;
+    dataWithDueDateAndSection.userId = userId;
 
     try {
       const userToken = auth.token;
@@ -147,6 +150,7 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId,section 
           console.error("Error updating todo task:", response.data.message);
           toast.error("Error updating todo task");
         }
+        fetchData();
       } else {
         const response = await axios.post(
           "http://localhost:4000/addTodo",
@@ -158,6 +162,8 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId,section 
           console.log("Todo task successfully created:", response.data);
           toast.success("Todo task successfully created");
           updateTodo(response.data.createdTodo);
+
+          fetchData();
         } else {
           console.error("Error creating todo task:", response.data.message);
           toast.error("Error creating todo task");

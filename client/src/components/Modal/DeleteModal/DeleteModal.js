@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import "./deleteModal.scss"
 import axios from 'axios';
 import toast, { Toaster } from "react-hot-toast";
-const DeleteModal = ({ isOpen, onClose, todoId  }) => {
+const DeleteModal = ({ isOpen, onClose, todoId,fetchData  }) => {
     const auth = JSON.parse(localStorage.getItem("user"));
     const customStyles = {
         content: {
@@ -36,6 +36,7 @@ const DeleteModal = ({ isOpen, onClose, todoId  }) => {
             // Handle successful deletion, update state, etc.
             console.log('Todo deleted successfully:', response.data);
             onClose(); 
+            fetchData();
             toast.success("Todo successfully Deleted")
           })
           .catch((error) => {

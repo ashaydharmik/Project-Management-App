@@ -17,20 +17,18 @@ const Cards = () => {
   const [section, setSection] = useState(null);
 
   const openModal = (todoId, section) => {
-    setSelectedTodoId((prevTodoId) => {
-      if (todoId !== null && todoId !== undefined) {
-        getSingleTodoData();
-        console.log("Fetching singleTodo data...");
-      } else {
-        setSingleTodo(null);
-      }
-
-      setModalOpen(true);
-      setSection(section);
-
-      return todoId;
-    });
+    if (todoId !== null && todoId !== undefined) {
+      getSingleTodoData(todoId); // No need for await here
+      console.log("Fetching singleTodo data...");
+    } else {
+      setSingleTodo(null);
+    }
+  
+    setModalOpen(true);
+    setSection(section);
+    setSelectedTodoId(todoId);
   };
+  
 
   const closeModal = () => {
     setModalOpen(false);
@@ -55,10 +53,10 @@ const Cards = () => {
     },
   };
 
-  const getSingleTodoData = async () => {
+  const getSingleTodoData = async (todoId) => {
     try {
       // Check if it's a new todo task
-      if (selectedTodoId === null || selectedTodoId === undefined) {
+      if (todoId === null || todoId === undefined) {
         setSingleTodo(null);
         setModalOpen(true);
         return;
@@ -70,11 +68,10 @@ const Cards = () => {
         Authorization: `Bearer ${userToken}`,
       };
       const response = await axios.get(
-        `http://localhost:4000/live-page/${selectedTodoId}`,
+        `http://localhost:4000/live-page/${todoId}`,
         { headers }
       );
       setSingleTodo(response.data.availableTodo);
-      setModalOpen(true);
     } catch (err) {
       console.error(err);
     }
@@ -105,38 +102,38 @@ const Cards = () => {
     }
   };
 
+  const fetchData = async () => {
+    try {
+      const userToken = auth.token;
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userToken}`,
+      };
+      const response = await axios.get("http://localhost:4000/getAllTodo", {
+        headers,
+      });
+
+      console.log("API Response:", response.data);
+
+      const sections = Object.keys(response.data);
+      let allTodos = [];
+
+      sections.forEach((section) => {
+        const todosInSection = response.data[section];
+        allTodos = allTodos.concat(todosInSection);
+      });
+
+      console.log("All Todos:", allTodos);
+
+      setTodos(allTodos);
+    } catch (error) {
+      console.error("Error fetching todo data:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const userToken = auth.token;
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${userToken}`,
-        };
-        const response = await axios.get("http://localhost:4000/getAllTodo", {
-          headers,
-        });
-
-        console.log("API Response:", response.data);
-
-        const sections = Object.keys(response.data);
-        let allTodos = [];
-
-        sections.forEach((section) => {
-          const todosInSection = response.data[section];
-          allTodos = allTodos.concat(todosInSection);
-        });
-
-        console.log("All Todos:", allTodos);
-
-        setTodos(allTodos);
-      } catch (error) {
-        console.error("Error fetching todo data:", error);
-      }
-    };
-
     fetchData();
-  }, [auth.token]); // Include auth.token as a dependency for useEffect
+  }, [auth.token]);
 
   const handleGlobalCollapse = () => {
     setGlobalCollapse(!isGlobalCollapse);
@@ -148,18 +145,18 @@ const Cards = () => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${userToken}`,
     };
-  
+
     try {
       // Retrieve the complete todo object
       const todoToMove = todos.find((todo) => todo._id === todoId);
-  
+
       // Update the section property in the backend
       await axios.put(
         `http://localhost:4000/updateTodo/${todoId}`,
         { ...todoToMove, section: targetColumn },
         { headers }
       );
-  
+
       // Update the section property in the local state
       setTodos((prevTodos) => {
         return prevTodos.map((todo) => {
@@ -173,7 +170,6 @@ const Cards = () => {
       console.error("Error moving todo:", error);
     }
   };
-  
 
   return (
     <>
@@ -207,6 +203,7 @@ const Cards = () => {
                       onMove={moveCard}
                       globalCollapse={handleGlobalCollapse}
                       openModal={() => openModal(todo._id, todo.section)}
+                      fetchData={fetchData} 
                     />
                   ))
               ) : (
@@ -233,6 +230,7 @@ const Cards = () => {
                       onMove={moveCard}
                       globalCollapse={handleGlobalCollapse}
                       openModal={() => openModal(todo._id, todo.section)}
+                      fetchData={fetchData} 
                     />
                   ))
               ) : (
@@ -259,6 +257,7 @@ const Cards = () => {
                       onMove={moveCard}
                       globalCollapse={handleGlobalCollapse}
                       openModal={() => openModal(todo._id, todo.section)}
+                      fetchData={fetchData} 
                     />
                   ))
               ) : (
@@ -285,6 +284,7 @@ const Cards = () => {
                       onMove={moveCard}
                       globalCollapse={handleGlobalCollapse}
                       openModal={() => openModal(todo._id, todo.section)}
+                      fetchData={fetchData} 
                     />
                   ))
               ) : (
@@ -309,6 +309,7 @@ const Cards = () => {
           selectedTodoId={selectedTodoId}
           singleTodo={singleTodo}
           section={section}
+          fetchData={fetchData} 
         />
       </Modal>
     </>

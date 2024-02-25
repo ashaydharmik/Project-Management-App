@@ -8,7 +8,7 @@ import axios from "axios";
 import DeleteModal from "../../../Modal/DeleteModal/DeleteModal";
 import { useGlobal } from "../../../Context/Context";
 
-const CreatedCard = ({ openModal, globalCollapse, onMove, todo }) => {
+const CreatedCard = ({ openModal, globalCollapse, onMove, todo, fetchData }) => {
   const auth = JSON.parse(localStorage.getItem("user"));
   const [showDropdown, setShowDropdown] = useState(false);
   const [isListCollapsed, setListCollapsed] = useState(true);
@@ -17,7 +17,7 @@ const CreatedCard = ({ openModal, globalCollapse, onMove, todo }) => {
   const { handleShareOptionClick } = useGlobal();
 
   const handleMoveCardInSection = (section) => {
-    // Call the moveCard prop to notify the parent component about the card movement
+    
     onMove(todo._id, section);
   };
   
@@ -168,6 +168,7 @@ const CreatedCard = ({ openModal, globalCollapse, onMove, todo }) => {
         onClose={() => setDeleteModalOpen(false)}
         onDelete={handleDeleteOptionClick}
         todoId={deleteTodoId}
+        fetchData={fetchData}
       />
     </>
   );
