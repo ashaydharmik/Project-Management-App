@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { GoDotFill } from "react-icons/go";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { IoIosArrowUp } from "react-icons/io";
@@ -8,19 +8,39 @@ import axios from "axios";
 import DeleteModal from "../../../Modal/DeleteModal/DeleteModal";
 import { useGlobal } from "../../../Context/Context";
 
-const CreatedCard = ({ openModal, globalCollapse, onMove, todo, fetchData }) => {
+const CreatedCard = ({
+  openModal,
+  globalCollapse,
+  onMove,
+  todo,
+  fetchData,
+}) => {
   const auth = JSON.parse(localStorage.getItem("user"));
   const [showDropdown, setShowDropdown] = useState(false);
-  const [isListCollapsed, setListCollapsed] = useState(true);
+  const [isListCollapsed, setListCollapsed] = useState({});
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteTodoId, setDeleteTodoId] = useState(null);
   const { handleShareOptionClick } = useGlobal();
+  // Add this state variable at the beginning of the component
+  const [isPastDueDate, setIsPastDueDate] = useState(false);
+  const [isCompletedTodo, setIsCompletedTodo] = useState(false);
 
   const handleMoveCardInSection = (section) => {
+    // Convert the section name to lowercase
+    const formattedSection = section.toLowerCase();
     
-    onMove(todo._id, section);
-  };
+    // Map the section names to match the backend
+    const sectionMappings = {
+      "todo": "todo",
+      "to-do": "todo",  // Add this mapping if needed
+      "backlog": "backlog",
+      "progress": "progress",
+      "done": "done",
+    };
   
+    // Pass the correct section name to the onMove function
+    onMove(todo._id, sectionMappings[formattedSection]);
+  };
 
   const handleDropdown = () => {
     setShowDropdown((prev) => !prev);
@@ -41,9 +61,29 @@ const CreatedCard = ({ openModal, globalCollapse, onMove, todo, fetchData }) => 
     setShowDropdown(false);
   };
 
+  useEffect(() => {
+    if (todo) {
+      setListCollapsed((prev) => ({
+        ...prev,
+        [todo._id]: false,
+      }));
+
+      const today = new Date();
+      const dueDate = new Date(todo.dueDate);
+      const isPast = dueDate < today;
+      setIsPastDueDate(isPast);
+
+      const isDone = todo.section === "done";
+      setIsCompletedTodo(isDone);
+    }
+  }, [todo, todo?.section]); // Include todo?.section in the dependencies
+
   const handleToggleLists = (e) => {
     e.stopPropagation();
-    setListCollapsed((prev) => !prev);
+    setListCollapsed((prev) => ({
+      ...prev,
+      [todo._id]: !prev[todo._id],
+    }));
   };
 
   const handleCheckItem = (itemIndex) => {
@@ -78,9 +118,24 @@ const CreatedCard = ({ openModal, globalCollapse, onMove, todo, fetchData }) => 
       case "moderate":
         return "#18B0FF";
       case "high":
-        return "red";
+        return "#FF2473";
       default:
         return "black";
+    }
+  };
+
+  const generateSectionButtons = (currentSection) => {
+    switch (currentSection) {
+      case "todo":
+        return ["BACKLOG", "PROGRESS", "DONE"];
+      case "backlog":
+        return ["PROGRESS", "TO-DO", "DONE"];
+      case "progress":
+        return ["BACKLOG", "TO-DO", "DONE"];
+      case "done":
+        return ["BACKLOG", "TO-DO", "PROGRESS"];
+      default:
+        return [];
     }
   };
 
@@ -116,11 +171,15 @@ const CreatedCard = ({ openModal, globalCollapse, onMove, todo, fetchData }) => 
 
             <div className="created-card-checklist">
               <p onClick={handleToggleLists}>
-                {isListCollapsed ? <IoIosArrowUp /> : <IoIosArrowDown />}
+                {isListCollapsed[todo._id] ? (
+                  <IoIosArrowUp />
+                ) : (
+                  <IoIosArrowDown />
+                )}
               </p>
             </div>
           </div>
-          {isListCollapsed && (
+          {isListCollapsed[todo._id] && (
             <div className="created-card-lists">
               {(todo.checklist || []).map((item, index) => (
                 <label key={index}>
@@ -138,7 +197,21 @@ const CreatedCard = ({ openModal, globalCollapse, onMove, todo, fetchData }) => 
           <div className="created-card-buttons">
             <div className="date-btn">
               {todo.dueDate && (
-                <button id="dateBtn">
+                <button
+                  id="dateBtn"
+                  style={{
+                    backgroundColor: isCompletedTodo
+                      ? "#63C05B"
+                      : isPastDueDate
+                      ? "#CF3636"
+                      : "#DBDBDB",
+                    color: isCompletedTodo
+                      ? "white"
+                      : isPastDueDate
+                      ? "white"
+                      : "#767575",
+                  }}
+                >
                   {new Date(todo.dueDate).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
@@ -147,15 +220,18 @@ const CreatedCard = ({ openModal, globalCollapse, onMove, todo, fetchData }) => 
               )}
             </div>
             <div className="section-btn">
-              <button onClick={() => handleMoveCardInSection("backlog")}>
-                Backlog
-              </button>
-              <button onClick={() => handleMoveCardInSection("progress")}>
-                Progress
-              </button>
-              <button onClick={() => handleMoveCardInSection("done")}>
-                Done
-              </button>
+              {generateSectionButtons(todo.section).map(
+                (sectionName, index) => (
+                  <button
+                    key={index}
+                    onClick={() =>
+                      handleMoveCardInSection(sectionName.toLowerCase())
+                    }
+                  >
+                    {sectionName}
+                  </button>
+                )
+              )}
             </div>
           </div>
         </div>

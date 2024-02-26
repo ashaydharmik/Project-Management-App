@@ -47,4 +47,24 @@ const completedTodoTask = asyncHandler(async(req, res) => {
     res.status(200).json({completedTodoCount });
 })
 
-module.exports = {highPriority, moderatePriority, lowPriority, backlogTodoTask, progressTodoTask, currentTodoTask, completedTodoTask};
+
+const dueDateTodoTask = asyncHandler(async (req, res) => {
+    // Find the count of todos in 'todo' section
+    const todoCount = await Todo.countDocuments({ section: 'todo' });
+
+    // Find the count of todos in 'backlog' section
+    const backlogCount = await Todo.countDocuments({ section: 'backlog' });
+
+    // Find the count of todos in 'progress' section
+    const progressCount = await Todo.countDocuments({ section: 'progress' });
+
+    // Calculate the total count
+    const totalDueDateCount = todoCount + backlogCount + progressCount;
+
+    res.status(200).json({ totalDueDateCount });
+});
+
+
+module.exports = { highPriority, moderatePriority, lowPriority, backlogTodoTask, progressTodoTask, currentTodoTask, completedTodoTask, dueDateTodoTask };
+
+

@@ -80,19 +80,53 @@ const fetchRecentTodo =asyncHandler(async(req,res)=>{
 
 //fetch all todo task created for the authenticated user
 const getAllTodoCreated = asyncHandler(async (req, res) => {
-  // Ensure that the user is authenticated
-  if (!req.user) {
-    res.status(401).json({ message: "Unauthorized" });
-    return;
-  }
+    try {
+    // Ensure that the user is authenticated
+    if (!req.user) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
 
-  // Fetch todos associated with the authenticated user
-  const getTodo = await Todo.find({ user: req.user._id });
+    const { selectedOption } = req.query;
 
-  if (getTodo.length > 0) {
-    res.status(200).json({ todo: getTodo });
-  } else {
-    res.status(400).json({ message: 'No Todo Found for the authenticated user' });
+    // Fetch todos based on the selectedOption
+    let todos;
+
+    switch (selectedOption) {
+      case 'today':
+        todos = await Todo.find({
+          user: req.user._id,
+          createdAt: { $gte: new Date().setHours(0, 0, 0, 0) },
+        });
+        break;
+
+      case 'week':
+        const weekStartDate = new Date();
+        weekStartDate.setDate(weekStartDate.getDate() - 6); // 6 days ago
+        todos = await Todo.find({
+          user: req.user._id,
+          createdAt: { $gte: weekStartDate },
+        });
+        break;
+
+      case 'month':
+        const monthStartDate = new Date();
+        monthStartDate.setMonth(monthStartDate.getMonth() - 1); // 1 month ago
+        todos = await Todo.find({
+          user: req.user._id,
+          createdAt: { $gte: monthStartDate },
+        });
+        break;
+
+      default:
+        res.status(400).json({ message: 'Invalid selected option' });
+        return;
+    }
+
+    res.status(200).json({ todos });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
@@ -171,6 +205,57 @@ const moveToSection=asyncHandler(async(req,res)=>{
 });
 
 
+//filtering the select option today, week and month
+// const selectTodos = asyncHandler(async (req, res) => {
+//   try {
+//     // Ensure that the user is authenticated
+//     if (!req.user) {
+//       res.status(401).json({ message: "Unauthorized" });
+//       return;
+//     }
+
+//     const { selectedOption } = req.query;
+
+//     // Fetch todos based on the selectedOption
+//     let todos;
+
+//     switch (selectedOption) {
+//       case 'today':
+//         todos = await Todo.find({
+//           user: req.user._id,
+//           createdAt: { $gte: new Date().setHours(0, 0, 0, 0) },
+//         });
+//         break;
+
+//       case 'week':
+//         const weekStartDate = new Date();
+//         weekStartDate.setDate(weekStartDate.getDate() - 6); // 6 days ago
+//         todos = await Todo.find({
+//           user: req.user._id,
+//           createdAt: { $gte: weekStartDate },
+//         });
+//         break;
+
+//       case 'month':
+//         const monthStartDate = new Date();
+//         monthStartDate.setMonth(monthStartDate.getMonth() - 1); // 1 month ago
+//         todos = await Todo.find({
+//           user: req.user._id,
+//           createdAt: { $gte: monthStartDate },
+//         });
+//         break;
+
+//       default:
+//         res.status(400).json({ message: 'Invalid selected option' });
+//         return;
+//     }
+
+//     res.status(200).json({ todos });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: 'Internal server error' });
+//   }
+// });
 
 
 module.exports = {addTodo, fetchRecentTodo, getAllTodoCreated, updateTodo , deleteTodo, moveToSection};

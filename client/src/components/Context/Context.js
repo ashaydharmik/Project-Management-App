@@ -14,6 +14,7 @@ const AppProvider = ({ children }) => {
  const [currentTodo, setCurrentTodo] = useState([0])
  const [progressTodo, setProgressTodo] = useState([0])
  const [doneTodo, setDoneTodo] = useState([0])
+ const [dueDate, setDueDate] = useState([0])
  
  const navigate = useNavigate();
  const auth = JSON.parse(localStorage.getItem("user")) || { token: null }
@@ -122,6 +123,18 @@ const fetchProgressTodoTask=()=>{
     });
 }
 
+const fetchDueDateTodoTask=()=>{
+  axios
+    .get(`http://localhost:4000/dueDateTodoTask`, {headers})
+    .then((response) => {
+      console.log('dueDateTodoTask:', response.data);
+      setDueDate(response.data)
+    })
+    .catch((error) => {
+      console.error('Error fetching dueDateTodoTask:', error);
+    });
+}
+
 
 
  const showLoginForm =()=>{
@@ -167,7 +180,9 @@ const handleSettingsClick =()=>{
         progressTodo,
         fetchProgressTodoTask,
         doneTodo,
-        fetchCompletedTodoTask
+        fetchCompletedTodoTask,
+        dueDate,
+        fetchDueDateTodoTask
       }}
     >
       {children}

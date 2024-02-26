@@ -15,6 +15,11 @@ const Cards = () => {
   const [isGlobalCollapse, setGlobalCollapse] = useState(false);
   const [todos, setTodos] = useState([]);
   const [section, setSection] = useState(null);
+  const [selectedOption, setSelectedOption] = useState("week"); // Default selected option
+
+  const handleOptionChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
 
   const openModal = (todoId, section) => {
     if (todoId !== null && todoId !== undefined) {
@@ -109,9 +114,10 @@ const Cards = () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${userToken}`,
       };
-      const response = await axios.get("http://localhost:4000/getAllTodo", {
+      const response = await axios.get(`http://localhost:4000/getAllTodo?selectedOption=${selectedOption}`, {
         headers,
       });
+
 
       console.log("API Response:", response.data);
 
@@ -133,10 +139,11 @@ const Cards = () => {
 
   useEffect(() => {
     fetchData();
-  }, [auth.token]);
+  }, [auth.token, selectedOption]);
 
   const handleGlobalCollapse = () => {
-    setGlobalCollapse(!isGlobalCollapse);
+    setGlobalCollapse((prev) => !prev);
+    console.log("Global Collapse in Cards:", isGlobalCollapse);
   };
 
   const moveCard = async (todoId, targetColumn) => {
@@ -145,18 +152,18 @@ const Cards = () => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${userToken}`,
     };
-
+  
     try {
       // Retrieve the complete todo object
       const todoToMove = todos.find((todo) => todo._id === todoId);
-
+  
       // Update the section property in the backend
       await axios.put(
         `http://localhost:4000/updateTodo/${todoId}`,
         { ...todoToMove, section: targetColumn },
         { headers }
       );
-
+  
       // Update the section property in the local state
       setTodos((prevTodos) => {
         return prevTodos.map((todo) => {
@@ -166,10 +173,14 @@ const Cards = () => {
           return todo;
         });
       });
+  
+      // Fetch updated data from the server
+      fetchData();
     } catch (error) {
       console.error("Error moving todo:", error);
     }
   };
+  
 
   return (
     <>
@@ -177,11 +188,11 @@ const Cards = () => {
         <div className="board-title-filter-container">
           <h1>Board</h1>
           <p>
-            <select id="dropdown" name="dropdown">
-              <option value="option1">Today</option>
-              <option value="option2">This Week</option>
-              <option value="option3">This Month</option>
-            </select>
+          <select id="dropdown" name="dropdown" onChange={handleOptionChange} value={selectedOption}>
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+          </select>
           </p>
         </div>
         <div className="cards-box-container">
@@ -202,12 +213,13 @@ const Cards = () => {
                       todo={todo}
                       onMove={moveCard}
                       globalCollapse={handleGlobalCollapse}
+                      setGlobalCollapse={setGlobalCollapse}
                       openModal={() => openModal(todo._id, todo.section)}
                       fetchData={fetchData} 
                     />
                   ))
               ) : (
-                <p>Loading...</p>
+                <p></p>
               )}
             </div>
           </div>
@@ -229,12 +241,13 @@ const Cards = () => {
                       todo={todo}
                       onMove={moveCard}
                       globalCollapse={handleGlobalCollapse}
+                      setGlobalCollapse={setGlobalCollapse}
                       openModal={() => openModal(todo._id, todo.section)}
                       fetchData={fetchData} 
                     />
                   ))
               ) : (
-                <p>Loading...</p>
+                <p></p>
               )}
             </div>
           </div>
@@ -242,7 +255,7 @@ const Cards = () => {
             <div className="card-title">
               <p>In Progress</p>
               <p>
-                <IoMdAdd onClick={() => openModal(null)} />
+          
                 <VscCollapseAll onClick={handleGlobalCollapse} />
               </p>
             </div>
@@ -256,12 +269,13 @@ const Cards = () => {
                       todo={todo}
                       onMove={moveCard}
                       globalCollapse={handleGlobalCollapse}
+                      setGlobalCollapse={setGlobalCollapse}
                       openModal={() => openModal(todo._id, todo.section)}
                       fetchData={fetchData} 
                     />
                   ))
               ) : (
-                <p>Loading...</p>
+                <p></p>
               )}
             </div>
           </div>
@@ -269,7 +283,7 @@ const Cards = () => {
             <div className="card-title">
               <p>Done</p>
               <p>
-                <IoMdAdd onClick={() => openModal(null)} />
+             
                 <VscCollapseAll onClick={handleGlobalCollapse} />
               </p>
             </div>
@@ -283,12 +297,13 @@ const Cards = () => {
                       todo={todo}
                       onMove={moveCard}
                       globalCollapse={handleGlobalCollapse}
+                      setGlobalCollapse={setGlobalCollapse}
                       openModal={() => openModal(todo._id, todo.section)}
                       fetchData={fetchData} 
                     />
                   ))
               ) : (
-                <p>Loading...</p>
+                <p></p>
               )}
             </div>
           </div>

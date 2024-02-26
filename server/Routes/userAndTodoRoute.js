@@ -2,8 +2,8 @@ const express = require("express");
 const { registerUser, loginUser, updatePassword, currentUser } = require("../Controller/userController");
 const errorHandler = require("../Middleware/errorHandler");
 const token = require("../Middleware/validateToken")
-const {addTodo, fetchRecentTodo, getAllTodoCreated, updateTodo, deleteTodo, moveToSection} = require("../Controller/todoController")
-const {highPriority, moderatePriority, lowPriority, backlogTodoTask, progressTodoTask, currentTodoTask, completedTodoTask} = require("../Controller/analyticsController")
+const {addTodo, fetchRecentTodo, getAllTodoCreated, updateTodo, deleteTodo, moveToSection, selectTodos} = require("../Controller/todoController")
+const {highPriority, moderatePriority, lowPriority, backlogTodoTask, progressTodoTask, currentTodoTask, completedTodoTask, dueDateTodoTask} = require("../Controller/analyticsController")
 
 const router = express.Router();
 
@@ -36,9 +36,13 @@ router.get("/backlogTodoTask", token, backlogTodoTask)
 router.get("/progressTodoTask", token, progressTodoTask)
 router.get("/currentTodoTask", token, currentTodoTask)
 router.get("/completedTodoTask", token, completedTodoTask)
+router.get("/dueDateTodoTask", token, dueDateTodoTask)
 
 //update to different todo task route
 router.put("/moveToSection/:_id",token, moveToSection);  //done
+
+//selected option todos route
+// router.get("/filterTodos", token, selectTodos)
 
 router.use(errorHandler);
 

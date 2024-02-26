@@ -20,6 +20,8 @@ const AnalyticsPage = () => {
     fetchProgressTodoTask,
     doneTodo,
     fetchCompletedTodoTask,
+    dueDate,
+    fetchDueDateTodoTask
   } = useGlobal();
 
   useEffect(() => {
@@ -30,6 +32,7 @@ const AnalyticsPage = () => {
     fetchCurrentTodoTask();
     fetchProgressTodoTask();
     fetchCompletedTodoTask();
+    fetchDueDateTodoTask();
   }, []);
 
   return (
@@ -99,7 +102,7 @@ const AnalyticsPage = () => {
                   <GoDotFill />
                   Due Date Tasks
                 </p>
-                <span>16</span>
+                <span>{dueDate.totalDueDateCount}</span>
               </p>
             </div>
           </div>
