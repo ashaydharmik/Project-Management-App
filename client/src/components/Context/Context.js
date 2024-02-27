@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const AppContext = React.createContext();
 
 const AppProvider = ({ children }) => {
@@ -15,7 +16,8 @@ const AppProvider = ({ children }) => {
  const [progressTodo, setProgressTodo] = useState([0])
  const [doneTodo, setDoneTodo] = useState([0])
  const [dueDate, setDueDate] = useState([0])
- 
+
+
  const navigate = useNavigate();
  const auth = JSON.parse(localStorage.getItem("user")) || { token: null }
  const userToken = auth.token;
@@ -30,7 +32,7 @@ const AppProvider = ({ children }) => {
     let fullUrl = `${window.location.origin}/live-page/${todoId}`;
     await navigator.clipboard.writeText(fullUrl);
     console.log(fullUrl);
-    toast.success("URL copied to clipboard!");
+    toast.success("Link Copied");
   } catch (err) {
     // Log the error
     console.error("Error copying to clipboard:", err);
@@ -186,17 +188,12 @@ const handleSettingsClick =()=>{
       }}
     >
       {children}
-      <Toaster
-        toastOptions={{
-          style: {
-            background: "#363636",
-            color: "#fff",
-            width: "350px",
-            fontSize: "18px",
-          },
-        }}
+      <ToastContainer
+      position="top-right"
+      autoClose={2000}
       />
     </AppContext.Provider>
+    
   );
 };
 

@@ -12,8 +12,50 @@
     align-items: center;
     height: 10vh;
     font-weight: 600;
-    select {
-      border: none;
+    // background-color: antiquewhite;/
+    h1{
+      // background-color: #fff;
+      width: fit-content;
+    }
+    .custom-dropdown{
+      position: relative;
+
+      .selected-option{
+        font-size: 13px;
+        width: fit-content;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap:5px;
+        svg{
+          
+          font-size: 13px;
+        }
+      }
+      .dropdown-content {
+        position: absolute;
+        background-color: #fff;
+        box-shadow: 0px 2px 22px 0px #7e7a7a40;
+        border-radius: 7px;
+        z-index: 1;
+        padding: 7px 7px;
+      z-index: 1;
+      top: 100%;
+      width: 7.5rem;
+        right: 0;
+        color: black;
+       
+        p {
+          margin: 0;
+          cursor: pointer;
+          font-weight: 600;
+          font-size: 12px;
+        padding: 4px 5px;
+          &:hover {
+            color: #cf3636;
+          }
+        }
+      }
     }
   }
   .cards-box-container {
@@ -28,7 +70,7 @@
       background: #eef2f5;
       padding: 1rem;
       border-radius: 10px;
-      width: 20rem;
+      width: 21rem;
       margin-bottom: 1rem;
       overflow-y: auto;
       .card-title {

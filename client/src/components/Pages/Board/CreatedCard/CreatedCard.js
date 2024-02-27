@@ -8,12 +8,15 @@ import axios from "axios";
 import DeleteModal from "../../../Modal/DeleteModal/DeleteModal";
 import { useGlobal } from "../../../Context/Context";
 
+
 const CreatedCard = ({
   openModal,
   globalCollapse,
   onMove,
   todo,
   fetchData,
+  isExpanded,
+  onToggleExpansion,
 }) => {
   const auth = JSON.parse(localStorage.getItem("user"));
   const [showDropdown, setShowDropdown] = useState(false);
@@ -67,23 +70,31 @@ const CreatedCard = ({
         ...prev,
         [todo._id]: false,
       }));
-
+  
       const today = new Date();
       const dueDate = new Date(todo.dueDate);
-      const isPast = dueDate < today;
+      
+      // Set isPast to true if the dueDate is before today's date
+      const isPast = dueDate < today && dueDate.toDateString() !== today.toDateString();
       setIsPastDueDate(isPast);
-
+  
       const isDone = todo.section === "done";
       setIsCompletedTodo(isDone);
     }
-  }, [todo, todo?.section]); // Include todo?.section in the dependencies
+  }, [todo, todo?.section]);
+  // Include todo?.section in the dependencies
+   // Include todo?.section in the dependencies
 
+  // const handleToggleLists = (e) => {
+  //   e.stopPropagation();
+  //   setListCollapsed((prev) => ({
+  //     ...prev,
+  //     [todo._id]: !prev[todo._id],
+  //   }));
+  // };
   const handleToggleLists = (e) => {
     e.stopPropagation();
-    setListCollapsed((prev) => ({
-      ...prev,
-      [todo._id]: !prev[todo._id],
-    }));
+    onToggleExpansion();
   };
 
   const handleCheckItem = (itemIndex) => {
@@ -105,6 +116,7 @@ const CreatedCard = ({
       .then((res) => {
         console.log(res);
         // Handle the response or update local state as needed
+        fetchData();
       })
       .catch((err) => {
         console.log(err);
@@ -171,7 +183,7 @@ const CreatedCard = ({
 
             <div className="created-card-checklist">
               <p onClick={handleToggleLists}>
-                {isListCollapsed[todo._id] ? (
+                {isExpanded ? (
                   <IoIosArrowUp />
                 ) : (
                   <IoIosArrowDown />
@@ -179,7 +191,7 @@ const CreatedCard = ({
               </p>
             </div>
           </div>
-          {isListCollapsed[todo._id] && (
+          {isExpanded && (
             <div className="created-card-lists">
               {(todo.checklist || []).map((item, index) => (
                 <label key={index}>
@@ -246,6 +258,7 @@ const CreatedCard = ({
         todoId={deleteTodoId}
         fetchData={fetchData}
       />
+
     </>
   );
 };

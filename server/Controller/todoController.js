@@ -67,16 +67,26 @@ const addTodo = asyncHandler(async(req, res) => {
 
 
 //fetch single todo task created 
-const fetchRecentTodo =asyncHandler(async(req,res)=>{
-  const {_id} = req.params;
-  const availableTodo = await Todo.findOne({ _id})
-      if(!availableTodo){
-          res.status(404)
-          throw new Error("Todo not exists")
-      }else{
-          res.status(200).json({message:"Todo Found ", availableTodo})
-      }
-})
+
+
+const fetchRecentTodo = asyncHandler(async (req, res) => {
+  const { _id } = req.params;
+  const availableTodo = await Todo.findOne({ _id });
+
+  if (!availableTodo) {
+    res.status(404).json({ error: "Todo not found" });
+  } else {
+    // Format the dueDate if it exists, considering UTC time zone
+    if (availableTodo.dueDate) {
+      availableTodo.dueDate = format(new Date(availableTodo.dueDate), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", { timeZone: "UTC" });
+    }
+
+    res.status(200).json({ message: "Todo Found", availableTodo });
+  }
+});
+
+
+
 
 //fetch all todo task created for the authenticated user
 const getAllTodoCreated = asyncHandler(async (req, res) => {
@@ -93,14 +103,14 @@ const getAllTodoCreated = asyncHandler(async (req, res) => {
     let todos;
 
     switch (selectedOption) {
-      case 'today':
+      case 'Today':
         todos = await Todo.find({
           user: req.user._id,
           createdAt: { $gte: new Date().setHours(0, 0, 0, 0) },
         });
         break;
 
-      case 'week':
+      case 'This Week':
         const weekStartDate = new Date();
         weekStartDate.setDate(weekStartDate.getDate() - 6); // 6 days ago
         todos = await Todo.find({
@@ -109,7 +119,7 @@ const getAllTodoCreated = asyncHandler(async (req, res) => {
         });
         break;
 
-      case 'month':
+      case 'This Month':
         const monthStartDate = new Date();
         monthStartDate.setMonth(monthStartDate.getMonth() - 1); // 1 month ago
         todos = await Todo.find({

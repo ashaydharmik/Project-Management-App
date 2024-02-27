@@ -14,51 +14,81 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId,section 
     taskName: "",
     priority: "",
     checklist: [initialChecklistItem],
-    dueDate: "",
+    dueDate: null,
   };
   const [todoData, setTodoData] = useState(initialValue);
-  const [dueDate, setDueDate] = useState(null);
+  // const [dueDate, setDueDate] = useState(null);
   const auth = JSON.parse(localStorage.getItem("user"));
+  const [addTodoErrMsg, setAddTodoErrMsg] = useState(false);
+  const [selectPriorityErrMsg, setSelectPriorityErrMsg] = useState(false);
 
   
+useEffect(() => {
+  console.log("singleTodo in TodoModal:", singleTodo);
+  if (singleTodo) {
+    const formattedDueDate = singleTodo.dueDate
+      ? formatDate(singleTodo.dueDate, 'MM/DD/YYYY', true) // Pass an additional flag
+      : null;
+    console.log("Formatted Due Date:", formattedDueDate);
+    setTodoData((prevData) => ({
+      ...prevData,
+      taskName: singleTodo.taskName || "",
+      priority: singleTodo.priority || "",
+      checklist: singleTodo.checklist || [initialChecklistItem],
+      dueDate: formattedDueDate,
+    }));
+  } else {
+    setTodoData({
+      ...initialValue,
+      checklist: [],
+    });
+  }
+}, [singleTodo, initialChecklistItem]);
 
-  useEffect(() => {
-    if (singleTodo) {
-      const newDueDate = singleTodo.dueDate ? new Date(singleTodo.dueDate) : null;
-  
-      setTodoData((prevTodoData) => ({
-        ...prevTodoData,
-        taskName: singleTodo.taskName || "",
-        priority: singleTodo.priority || "",
-        checklist: singleTodo.checklist || [initialChecklistItem],
-        dueDate: newDueDate,
-      }));
-  
-      // Update the dueDate state directly
-      setDueDate(newDueDate);
-    } else {
-      // Handle the case when creating a new todo
-      setTodoData({
-        ...initialValue,
-        checklist: [], // Set checklist to an empty array for new todos
-      });
-  
-      setDueDate(null);
-    }
-  }, [singleTodo, initialChecklistItem]);
+const formatDate = (date, format = 'MM/DD/YYYY', isPrefilling = false) => {
+  if (format === 'DD/MM/YYYY') {
+    return new Date(date).toLocaleDateString('en-US', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  } else if (format === 'MM/DD/YYYY') {
+    return new Date(date).toLocaleDateString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric',
+    });
+  } else if (format === 'MM/DD/YYYY' && isPrefilling) {
+    return new Date(date).toLocaleDateString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric',
+    }).split('-').join('/'); // Convert '/' to '-'
+  }
+  // Handle additional formats if needed
+  return date;
+};
+
+
+// const formatDate = (date) => {
+//   const formattedDate = new Date(date).toISOString().split('T')[0];
+//   return formattedDate;
+// };  
   
 
-  const handleDueDateChange = (date) => {
-    setDueDate(date);
-  };
+  
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setTodoData({
-      ...todoData,
-      [name]: value,
-    });
+    setTodoData((prevData) => ({
+      ...prevData,
+      [name]: name === "dueDate" ? (value !== "" ? value : null) : value,
+    }));
+  
   };
+  
+  
 
   const handleCheckboxChange = (index) => {
     const updatedChecklist = [...todoData.checklist];
@@ -67,6 +97,7 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId,section 
       ...todoData,
       checklist: updatedChecklist,
     });
+    
   };
 
   const handleAddNew = () => {
@@ -75,6 +106,7 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId,section 
       ...todoData,
       checklist: [...todoData.checklist, newChecklistItem],
     });
+    setAddTodoErrMsg(false);
   };
 
   const handleDelete = (index) => {
@@ -101,6 +133,7 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId,section 
       ...todoData,
       priority: value,
     });
+    setSelectPriorityErrMsg(false)
   };
 
   // TodoModal.js
@@ -110,21 +143,22 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId,section 
     e.preventDefault();
 
     if (!todoData.checklist.some((item) => item.label.trim() !== "")) {
-      toast.error("Please add at least one todo task");
+      setAddTodoErrMsg(true)
       return;
     }
 
     if (!todoData.priority) {
-      toast.error("Please select a priority");
+      // toast.error("Please select a priority");
+      setSelectPriorityErrMsg(true)
+      // setErrMsg("Please select a priority")
       return;
-    }
+    } 
 
     const dataWithDueDateAndSection = {
       ...todoData,
-      dueDate: dueDate,
-      section: section, // Pass the section information
+      section: section,
     };
-    
+
     const userId = JSON.parse(localStorage.getItem("user")).id;
     dataWithDueDateAndSection.userId = userId;
 
@@ -150,8 +184,11 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId,section 
           console.error("Error updating todo task:", response.data.message);
           toast.error("Error updating todo task");
         }
-        fetchData();
+        // fetchData();
       } else {
+
+        
+
         const response = await axios.post(
           "http://localhost:4000/addTodo",
           dataWithDueDateAndSection,
@@ -176,7 +213,9 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId,section 
       toast.error("Error updating/creating todo task");
     }
   };
-  
+
+
+
 
   return (
     <>
@@ -193,12 +232,15 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId,section 
                 name="taskName"
                 onChange={handleChange}
                 value={todoData.taskName}
+                placeholder="Enter Task Title"
               />
             </div>
+           
             <div className="task-priority">
               <label>
                 Select Priority <span>*</span>
               </label>
+
               <button
                 type="button"
                 style={{
@@ -235,6 +277,7 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId,section 
                 LOW PRIORITY
               </button>
             </div>
+              {selectPriorityErrMsg && <p className="errMsg">Please select a priority</p>}
 
             <div className="checklist">
               <p>
@@ -257,6 +300,7 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId,section 
                       type="text"
                       value={item.label}
                       onChange={(e) => handleChangeChecklistItem(e, index)}
+                      placeholder="Add a task"
                       required
                     />
                     <ImBin2 onClick={() => handleDelete(index)} />
@@ -265,21 +309,29 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId,section 
               ))}
             </div>
             <div className="task-add-button">
+            {addTodoErrMsg && <p className="errMsg">Please add at least one todo task</p>}
+
               <button type="button" onClick={handleAddNew}>
+        
                 <IoMdAdd />
-                Add New{" "}
+                Add New
               </button>
             </div>
             <div className="task-date-save-buttons">
-              <div className="due-date-button">
-                <DatePicker
-                  className="datepicker"
-                  dateFormat="MM/dd/yyyy"
-                  selected={dueDate}
-                  onChange={handleDueDateChange}
-                  placeholderText="Select Due Date"
-                />
-              </div>
+            <div className="due-date-button">
+       
+            <input
+  type="text"
+  className="datepicker"
+  value={todoData.dueDate ? formatDate(todoData.dueDate) : ""}
+  onChange={handleChange}
+  name="dueDate"
+  onFocus={(e) => e.target.type='date'}
+  placeholder="Select Due Date"
+/>
+
+       
+      </div>
               <div className="submit-button">
                 <button type="button" onClick={closeModal}>
                   Cancel
