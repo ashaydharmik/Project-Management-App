@@ -3,7 +3,7 @@ import { GoDotFill } from "react-icons/go";
 import { IoMdAdd } from "react-icons/io";
 import { ImBin2 } from "react-icons/im";
 import "./todoModal.scss";
-import DatePicker from "react-datepicker";
+
 import "react-datepicker/dist/react-datepicker.css";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
@@ -27,7 +27,7 @@ useEffect(() => {
   console.log("singleTodo in TodoModal:", singleTodo);
   if (singleTodo) {
     const formattedDueDate = singleTodo.dueDate
-      ? formatDate(singleTodo.dueDate, 'MM/DD/YYYY', true) // Pass an additional flag
+      ? formatDate(singleTodo.dueDate, 'MM/DD/YYYY', true) 
       : null;
     console.log("Formatted Due Date:", formattedDueDate);
     setTodoData((prevData) => ({
@@ -45,13 +45,13 @@ useEffect(() => {
   }
 }, [singleTodo, initialChecklistItem]);
 
-const formatDate = (date, format = 'MM/DD/YYYY', isPrefilling = false) => {
-  if (format === 'DD/MM/YYYY') {
+const formatDate = (date, format = 'DD-MM-YYYY', isPrefilling = false) => {
+  if (format === 'DD-MM-YYYY') {
     return new Date(date).toLocaleDateString('en-US', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
-    });
+    }).split('-').join('/');
   } else if (format === 'MM/DD/YYYY') {
     return new Date(date).toLocaleDateString('en-US', {
       month: '2-digit',
@@ -63,11 +63,14 @@ const formatDate = (date, format = 'MM/DD/YYYY', isPrefilling = false) => {
       month: '2-digit',
       day: '2-digit',
       year: 'numeric',
-    }).split('-').join('/'); // Convert '/' to '-'
+    });
   }
   // Handle additional formats if needed
   return date;
 };
+
+
+
 
 
 // const formatDate = (date) => {
@@ -79,14 +82,37 @@ const formatDate = (date, format = 'MM/DD/YYYY', isPrefilling = false) => {
   
   
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+const handleChange = (e) => {
+  const { name, value } = e.target;
+
+  if (name === "dueDate") {
+    // Parse the input date string and format it to "yyyy-MM-dd"
+    const parsedDate = new Date(value);
+    const formattedDate = parsedDate.toISOString().split('T')[0];
+
     setTodoData((prevData) => ({
       ...prevData,
-      [name]: name === "dueDate" ? (value !== "" ? value : null) : value,
+      [name]: formattedDate,
     }));
-  
-  };
+  } else {
+    setTodoData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  }
+};
+
+const handleBlur = (e) => {
+  const { name, value, type } = e.target;
+
+  if (name === "dueDate" && type === "text") {
+    const formattedDate = new Date(value).toISOString().split('T')[0];
+    e.target.value = formattedDate;
+  }
+};
+
+
+
   
   
 
@@ -184,7 +210,7 @@ const formatDate = (date, format = 'MM/DD/YYYY', isPrefilling = false) => {
           console.error("Error updating todo task:", response.data.message);
           toast.error("Error updating todo task");
         }
-        // fetchData();
+        fetchData();
       } else {
 
         
@@ -319,19 +345,18 @@ const formatDate = (date, format = 'MM/DD/YYYY', isPrefilling = false) => {
             </div>
             <div className="task-date-save-buttons">
             <div className="due-date-button">
-       
-            <input
-  type="text"
-  className="datepicker"
-  value={todoData.dueDate ? formatDate(todoData.dueDate) : ""}
-  onChange={handleChange}
-  name="dueDate"
-  onFocus={(e) => e.target.type='date'}
-  placeholder="Select Due Date"
-/>
+  <input
+    type="text"
+    className="datepicker"
+    value={todoData.dueDate || ""}
+    onChange={handleChange}
+    onFocus={(e) => e.target.type = 'date'}
+    onBlur={handleBlur}
+    name="dueDate"
+    placeholder="Select Due Date"
+  />
+</div>
 
-       
-      </div>
               <div className="submit-button">
                 <button type="button" onClick={closeModal}>
                   Cancel

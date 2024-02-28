@@ -6,6 +6,7 @@ import { RiLock2Line } from "react-icons/ri";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { useGlobal } from "../../Context/Context";
+import Login from "../Login/Login"
 
 const Register = () => {
   const initialValue = {
@@ -16,6 +17,7 @@ const Register = () => {
   };
   const [registerData, setRegisterData] = useState(initialValue);
   const { navigate, setShowRegister } = useGlobal();
+  const [showLogin, setShowLogin] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,9 +41,7 @@ const Register = () => {
         console.log("user created");
         localStorage.setItem("user", JSON.stringify(response.data));
         setRegisterData(initialValue);
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 1000);
+        setShowLogin(true);
       }
     } catch (error) {
       console.log("Error during registration:", error);
@@ -60,6 +60,9 @@ const Register = () => {
 
   return (
     <>
+    {showLogin ? (
+        <Login />
+      ) : (
       <div className="register-container">
         <div className="heading">
           <h1>Register</h1>
@@ -68,7 +71,7 @@ const Register = () => {
           <form onSubmit={handleSubmit}>
             <div className="info">
               <p>
-                {" "}
+          
                 <FaRegUser />
                 <input
                   type="text"
@@ -79,7 +82,7 @@ const Register = () => {
                 />
               </p>
               <p>
-                {" "}
+           
                 <MdOutlineEmail />
                 <input
                   type="email"
@@ -90,7 +93,7 @@ const Register = () => {
                 />
               </p>
               <p>
-                {" "}
+               
                 <RiLock2Line />
                 <input
                   type="password"
@@ -101,7 +104,7 @@ const Register = () => {
                 />
               </p>
               <p>
-                {" "}
+            
                 <RiLock2Line />
                 <input
                   type="password"
@@ -124,6 +127,7 @@ const Register = () => {
           </button>
         </div>
       </div>
+      )}
       <Toaster
         toastOptions={{
           style: {
