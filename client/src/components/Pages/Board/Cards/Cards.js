@@ -84,7 +84,7 @@ const Cards = () => {
         Authorization: `Bearer ${userToken}`,
       };
       const response = await axios.get(
-        `http://localhost:4000/live-page/${todoId}`,
+        `https://project-management-app-5swq.onrender.com/live-page/${todoId}`,
         { headers }
       );
       setSingleTodo(response.data.availableTodo);
@@ -103,7 +103,7 @@ const Cards = () => {
 
       axios
         .put(
-          `http://localhost:4000/updateTodo/${selectedTodoId}`,
+          `https://project-management-app-5swq.onrender.com/updateTodo/${selectedTodoId}`,
           updatedTodo,
           { headers }
         )
@@ -126,7 +126,7 @@ const Cards = () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${userToken}`,
       };
-      const response = await axios.get(`http://localhost:4000/getAllTodo?selectedOption=${selectedOption}`, {
+      const response = await axios.get(`https://project-management-app-5swq.onrender.com/getAllTodo?selectedOption=${selectedOption}`, {
         headers,
       });
 
@@ -168,7 +168,7 @@ const Cards = () => {
   
       // Update the section property in the backend
       await axios.put(
-        `http://localhost:4000/updateTodo/${todoId}`,
+        `https://project-management-app-5swq.onrender.com/updateTodo/${todoId}`,
         { ...todoToMove, section: targetColumn },
         { headers }
       );

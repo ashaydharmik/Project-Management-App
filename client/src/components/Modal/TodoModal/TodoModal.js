@@ -197,7 +197,7 @@ const handleBlur = (e) => {
 
       if (selectedTodoId) {
         const response = await axios.put(
-          `http://localhost:4000/updateTodo/${selectedTodoId}`,
+          `https://project-management-app-5swq.onrender.com/updateTodo/${selectedTodoId}`,
           dataWithDueDateAndSection,
           { headers }
         );
@@ -216,7 +216,7 @@ const handleBlur = (e) => {
         
 
         const response = await axios.post(
-          "http://localhost:4000/addTodo",
+          "https://project-management-app-5swq.onrender.com/addTodo",
           dataWithDueDateAndSection,
           { headers }
         );

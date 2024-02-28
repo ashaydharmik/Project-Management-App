@@ -31,7 +31,7 @@ const DeleteModal = ({ isOpen, onClose, todoId,fetchData  }) => {
           Authorization: `Bearer ${userToken}`,
         };
         axios
-          .delete(`http://localhost:4000/deleteTodo/${todoId}`, {headers})
+          .delete(`https://project-management-app-5swq.onrender.com/deleteTodo/${todoId}`, {headers})
           .then((response) => {
             // Handle successful deletion, update state, etc.
             console.log('Todo deleted successfully:', response.data);

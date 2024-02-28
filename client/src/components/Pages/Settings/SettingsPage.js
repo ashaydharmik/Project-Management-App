@@ -38,7 +38,7 @@ useEffect(()=>{
             'Authorization': `Bearer ${token}` 
           };
           console.log('Headers:', headers);
-          const response = await axios.get("http://localhost:4000/currentUser", { headers });
+          const response = await axios.get("https://project-management-app-5swq.onrender.com/currentUser", { headers });
           console.log('Response:', response.data);
           setUsername(response.data.userName)
         } else {
@@ -62,7 +62,7 @@ useEffect(()=>{
       };
   
       const response = await axios.put(
-        "http://localhost:4000/updatePassword",
+        "https://project-management-app-5swq.onrender.com/updatePassword",
         updatedUserData,
         {
           headers: {

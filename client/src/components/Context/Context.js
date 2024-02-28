@@ -44,7 +44,7 @@ const AppProvider = ({ children }) => {
 
  const fetchHighPriority=()=>{
   axios
-    .get(`http://localhost:4000/highPriority`, {headers})
+    .get(`https://project-management-app-5swq.onrender.com/highPriority`, {headers})
     .then((response) => {
       console.log('High priority', response.data);
       setHighPriority(response.data)
@@ -56,7 +56,7 @@ const AppProvider = ({ children }) => {
 
 const fetchModeratePriority=()=>{
   axios
-    .get(`http://localhost:4000/moderatePriority`, {headers})
+    .get(`https://project-management-app-5swq.onrender.com/moderatePriority`, {headers})
     .then((response) => {
       console.log('Moderate priority', response.data);
       setModeratePriority(response.data)
@@ -68,7 +68,7 @@ const fetchModeratePriority=()=>{
 
 const fetchLowPriority=()=>{
   axios
-    .get(`http://localhost:4000/lowPriority`, {headers})
+    .get(`https://project-management-app-5swq.onrender.com/lowPriority`, {headers})
     .then((response) => {
       console.log('Low priority', response.data);
       setLowPriority(response.data)
@@ -82,7 +82,7 @@ const fetchLowPriority=()=>{
 //task api call
 const fetchBacklogTodoTask=()=>{
   axios
-    .get(`http://localhost:4000/backlogTodoTask`, {headers})
+    .get(`https://project-management-app-5swq.onrender.com/backlogTodoTask`, {headers})
     .then((response) => {
       console.log('backlogTodoTask:', response.data);
       setBacklogTodo(response.data)
@@ -93,7 +93,7 @@ const fetchBacklogTodoTask=()=>{
 }
 const fetchCompletedTodoTask=()=>{
   axios
-    .get(`http://localhost:4000/completedTodoTask`, {headers})
+    .get(`https://project-management-app-5swq.onrender.com/completedTodoTask`, {headers})
     .then((response) => {
       console.log('CompletedTodoTask:', response.data);
       setDoneTodo(response.data)
@@ -104,7 +104,7 @@ const fetchCompletedTodoTask=()=>{
 }
 const fetchCurrentTodoTask=()=>{
   axios
-    .get(`http://localhost:4000/currentTodoTask`, {headers})
+    .get(`https://project-management-app-5swq.onrender.com/currentTodoTask`, {headers})
     .then((response) => {
       console.log('CurrentTodoTask:', response.data);
       setCurrentTodo(response.data)
@@ -115,7 +115,7 @@ const fetchCurrentTodoTask=()=>{
 }
 const fetchProgressTodoTask=()=>{
   axios
-    .get(`http://localhost:4000/progressTodoTask`, {headers})
+    .get(`https://project-management-app-5swq.onrender.com/progressTodoTask`, {headers})
     .then((response) => {
       console.log('ProgressTodoTask:', response.data);
       setProgressTodo(response.data)
@@ -127,7 +127,7 @@ const fetchProgressTodoTask=()=>{
 
 const fetchDueDateTodoTask=()=>{
   axios
-    .get(`http://localhost:4000/dueDateTodoTask`, {headers})
+    .get(`https://project-management-app-5swq.onrender.com/dueDateTodoTask`, {headers})
     .then((response) => {
       console.log('dueDateTodoTask:', response.data);
       setDueDate(response.data)

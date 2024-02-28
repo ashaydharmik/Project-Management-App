@@ -18,7 +18,7 @@ const BoardPage = () => {
             'Authorization': `Bearer ${token}`
           };
 
-          const response = await axios.get("http://localhost:4000/currentUser", { headers });
+          const response = await axios.get("https://project-management-app-5swq.onrender.com/currentUser", { headers });
           // console.log('Response:', response.data);
           const apiDate = response.data.lastLoginDate;
 

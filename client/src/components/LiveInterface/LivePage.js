@@ -12,7 +12,7 @@ const LivePage = () => {
 
 const fetchLivePageData=()=>{
   console.log('livePageDataId:', id);
-  axios.get(`http://localhost:4000/live-page/${id}`)
+  axios.get(`https://project-management-app-5swq.onrender.com/live-page/${id}`)
     .then((res)=>{
       console.log(res.data.availableTodo)
       setTodoData(res.data.availableTodo)
