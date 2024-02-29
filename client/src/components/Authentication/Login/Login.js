@@ -31,7 +31,6 @@ const Login = () => {
 
       if (response.data && response.data.message) {
         toast.success(response.data.message);
-        console.log("user logged-in");
         localStorage.setItem("user", JSON.stringify(response.data));
         setLoginData(initialValue);
         setTimeout(() => {
@@ -63,7 +62,6 @@ const Login = () => {
           <form onSubmit={handleSubmit}>
             <div className="info">
               <p>
-                {" "}
                 <MdOutlineEmail />
                 <input
                   type="email"
@@ -74,7 +72,6 @@ const Login = () => {
                 />
               </p>
               <p>
-                {" "}
                 <RiLock2Line />
                 <input
                   type="password"

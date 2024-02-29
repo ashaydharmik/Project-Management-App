@@ -2,9 +2,7 @@
 
 .nav-items-container {
   width: 100%;
-  // background-color: aqua;
   .heading {
-    // background-color: beige;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -16,7 +14,6 @@
   }
   .nav-menu {
     width: 100%;
-
     button {
       width: 100%;
       height: 2.5rem;
@@ -33,21 +30,18 @@
         width: 20px;
         height: 20px;
       }
-
       span {
         font-size: 1rem;
       }
-      
-      &.active{
+      &.active {
         font-weight: 600;
-        background: #4391ED1A;
+        background: #4391ed1a;
       }
     }
   }
 }
 .logout-container {
   width: 100%;
-
   p {
     display: flex;
     justify-content: center;
@@ -58,7 +52,6 @@
     font-weight: 500;
     margin-bottom: 1rem;
     cursor: pointer;
-
     svg {
       width: 25px;
       height: 30px;

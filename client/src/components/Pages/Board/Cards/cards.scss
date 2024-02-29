@@ -12,23 +12,20 @@
     align-items: center;
     height: 10vh;
     font-weight: 600;
-    // background-color: antiquewhite;/
-    h1{
-      // background-color: #fff;
+    h1 {
       width: fit-content;
     }
-    .custom-dropdown{
+    .custom-dropdown {
       position: relative;
 
-      .selected-option{
+      .selected-option {
         font-size: 13px;
         width: fit-content;
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap:5px;
-        svg{
-          
+        gap: 5px;
+        svg {
           font-size: 13px;
         }
       }
@@ -39,18 +36,17 @@
         border-radius: 7px;
         z-index: 1;
         padding: 7px 7px;
-      z-index: 1;
-      top: 100%;
-      width: 7.5rem;
+        z-index: 1;
+        top: 100%;
+        width: 7.5rem;
         right: 0;
         color: black;
-       
         p {
           margin: 0;
           cursor: pointer;
           font-weight: 600;
           font-size: 12px;
-        padding: 4px 5px;
+          padding: 4px 5px;
           &:hover {
             color: #cf3636;
           }
@@ -78,20 +74,16 @@
         justify-content: space-between;
         align-items: center;
         font-weight: 600;
-        svg{
-            cursor: pointer;
-            margin-left: 20px;
-            font-size: 1.3rem;
-            
+        svg {
+          cursor: pointer;
+          margin-left: 20px;
+          font-size: 1.3rem;
         }
       }
-      .card{
+      .card {
         width: 100%;
-    // background: white;
-    height: fit-content;
-    // padding: 1rem;
-    margin-top: 1rem;
-    // border-radius: 10px;
+        height: fit-content;
+        margin-top: 1rem;
       }
     }
   }

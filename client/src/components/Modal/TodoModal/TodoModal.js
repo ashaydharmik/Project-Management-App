@@ -9,7 +9,14 @@ import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 const initialChecklistItem = { label: "", done: false };
 
-const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId,section , fetchData  }) => {
+const TodoModal = ({
+  closeModal,
+  singleTodo,
+  updateTodo,
+  selectedTodoId,
+  section,
+  fetchData,
+}) => {
   const initialValue = {
     taskName: "",
     priority: "",
@@ -17,104 +24,82 @@ const TodoModal = ({ closeModal, singleTodo, updateTodo, selectedTodoId,section 
     dueDate: null,
   };
   const [todoData, setTodoData] = useState(initialValue);
-  // const [dueDate, setDueDate] = useState(null);
   const auth = JSON.parse(localStorage.getItem("user"));
   const [addTodoErrMsg, setAddTodoErrMsg] = useState(false);
   const [selectPriorityErrMsg, setSelectPriorityErrMsg] = useState(false);
 
-  
-useEffect(() => {
-  console.log("singleTodo in TodoModal:", singleTodo);
-  if (singleTodo) {
-    const formattedDueDate = singleTodo.dueDate
-      ? formatDate(singleTodo.dueDate, 'MM/DD/YYYY', true) 
-      : null;
-    console.log("Formatted Due Date:", formattedDueDate);
-    setTodoData((prevData) => ({
-      ...prevData,
-      taskName: singleTodo.taskName || "",
-      priority: singleTodo.priority || "",
-      checklist: singleTodo.checklist || [initialChecklistItem],
-      dueDate: formattedDueDate,
-    }));
-  } else {
-    setTodoData({
-      ...initialValue,
-      checklist: [],
-    });
-  }
-}, [singleTodo, initialChecklistItem]);
+  useEffect(() => {
+    if (singleTodo) {
+      const formattedDueDate = singleTodo.dueDate
+        ? formatDate(singleTodo.dueDate, "MM/DD/YYYY", true)
+        : null;
+      setTodoData((prevData) => ({
+        ...prevData,
+        taskName: singleTodo.taskName || "",
+        priority: singleTodo.priority || "",
+        checklist: singleTodo.checklist || [initialChecklistItem],
+        dueDate: formattedDueDate,
+      }));
+    } else {
+      setTodoData({
+        ...initialValue,
+        checklist: [],
+      });
+    }
+  }, [singleTodo, initialChecklistItem]);
 
-const formatDate = (date, format = 'DD-MM-YYYY', isPrefilling = false) => {
-  if (format === 'DD-MM-YYYY') {
-    return new Date(date).toLocaleDateString('en-US', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    }).split('-').join('/');
-  } else if (format === 'MM/DD/YYYY') {
-    return new Date(date).toLocaleDateString('en-US', {
-      month: '2-digit',
-      day: '2-digit',
-      year: 'numeric',
-    });
-  } else if (format === 'MM/DD/YYYY' && isPrefilling) {
-    return new Date(date).toLocaleDateString('en-US', {
-      month: '2-digit',
-      day: '2-digit',
-      year: 'numeric',
-    });
-  }
-  // Handle additional formats if needed
-  return date;
-};
+  const formatDate = (date, format = "DD-MM-YYYY", isPrefilling = false) => {
+    if (format === "DD-MM-YYYY") {
+      return new Date(date)
+        .toLocaleDateString("en-US", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        })
+        .split("-")
+        .join("/");
+    } else if (format === "MM/DD/YYYY") {
+      return new Date(date).toLocaleDateString("en-US", {
+        month: "2-digit",
+        day: "2-digit",
+        year: "numeric",
+      });
+    } else if (format === "MM/DD/YYYY" && isPrefilling) {
+      return new Date(date).toLocaleDateString("en-US", {
+        month: "2-digit",
+        day: "2-digit",
+        year: "numeric",
+      });
+    }
+    return date;
+  };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
+    if (name === "dueDate") {
+      const parsedDate = new Date(value);
+      const formattedDate = parsedDate.toISOString().split("T")[0];
 
+      setTodoData((prevData) => ({
+        ...prevData,
+        [name]: formattedDate,
+      }));
+    } else {
+      setTodoData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
+  };
 
-
-// const formatDate = (date) => {
-//   const formattedDate = new Date(date).toISOString().split('T')[0];
-//   return formattedDate;
-// };  
-  
-
-  
-  
-
-const handleChange = (e) => {
-  const { name, value } = e.target;
-
-  if (name === "dueDate") {
-    // Parse the input date string and format it to "yyyy-MM-dd"
-    const parsedDate = new Date(value);
-    const formattedDate = parsedDate.toISOString().split('T')[0];
-
-    setTodoData((prevData) => ({
-      ...prevData,
-      [name]: formattedDate,
-    }));
-  } else {
-    setTodoData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  }
-};
-
-const handleBlur = (e) => {
-  const { name, value, type } = e.target;
-
-  if (name === "dueDate" && type === "text") {
-    const formattedDate = new Date(value).toISOString().split('T')[0];
-    e.target.value = formattedDate;
-  }
-};
-
-
-
-  
-  
+  const handleBlur = (e) => {
+    const { name, value, type } = e.target;
+    if (name === "dueDate" && type === "text") {
+      const formattedDate = new Date(value).toISOString().split("T")[0];
+      e.target.value = formattedDate;
+    }
+  };
 
   const handleCheckboxChange = (index) => {
     const updatedChecklist = [...todoData.checklist];
@@ -123,7 +108,6 @@ const handleBlur = (e) => {
       ...todoData,
       checklist: updatedChecklist,
     });
-    
   };
 
   const handleAddNew = () => {
@@ -159,26 +143,21 @@ const handleBlur = (e) => {
       ...todoData,
       priority: value,
     });
-    setSelectPriorityErrMsg(false)
+    setSelectPriorityErrMsg(false);
   };
 
-  // TodoModal.js
-
- 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!todoData.checklist.some((item) => item.label.trim() !== "")) {
-      setAddTodoErrMsg(true)
+      setAddTodoErrMsg(true);
       return;
     }
 
     if (!todoData.priority) {
-      // toast.error("Please select a priority");
-      setSelectPriorityErrMsg(true)
-      // setErrMsg("Please select a priority")
+      setSelectPriorityErrMsg(true);
       return;
-    } 
+    }
 
     const dataWithDueDateAndSection = {
       ...todoData,
@@ -203,7 +182,6 @@ const handleBlur = (e) => {
         );
 
         if (response.status === 200) {
-          console.log("Todo task successfully updated:", response.data);
           toast.success("Todo task successfully updated");
           updateTodo(response.data.updatedTodo);
         } else {
@@ -212,9 +190,6 @@ const handleBlur = (e) => {
         }
         fetchData();
       } else {
-
-        
-
         const response = await axios.post(
           "https://project-management-app-5swq.onrender.com/addTodo",
           dataWithDueDateAndSection,
@@ -222,7 +197,6 @@ const handleBlur = (e) => {
         );
 
         if (response.status === 200) {
-          console.log("Todo task successfully created:", response.data);
           toast.success("Todo task successfully created");
           updateTodo(response.data.createdTodo);
 
@@ -239,9 +213,6 @@ const handleBlur = (e) => {
       toast.error("Error updating/creating todo task");
     }
   };
-
-
-
 
   return (
     <>
@@ -261,7 +232,7 @@ const handleBlur = (e) => {
                 placeholder="Enter Task Title"
               />
             </div>
-           
+
             <div className="task-priority">
               <label>
                 Select Priority <span>*</span>
@@ -303,7 +274,9 @@ const handleBlur = (e) => {
                 LOW PRIORITY
               </button>
             </div>
-              {selectPriorityErrMsg && <p className="errMsg">Please select a priority</p>}
+            {selectPriorityErrMsg && (
+              <p className="errMsg">Please select a priority</p>
+            )}
 
             <div className="checklist">
               <p>
@@ -335,27 +308,28 @@ const handleBlur = (e) => {
               ))}
             </div>
             <div className="task-add-button">
-            {addTodoErrMsg && <p className="errMsg">Please add at least one todo task</p>}
+              {addTodoErrMsg && (
+                <p className="errMsg">Please add at least one todo task</p>
+              )}
 
               <button type="button" onClick={handleAddNew}>
-        
                 <IoMdAdd />
                 Add New
               </button>
             </div>
             <div className="task-date-save-buttons">
-            <div className="due-date-button">
-  <input
-    type="text"
-    className="datepicker"
-    value={todoData.dueDate || ""}
-    onChange={handleChange}
-    onFocus={(e) => e.target.type = 'date'}
-    onBlur={handleBlur}
-    name="dueDate"
-    placeholder="Select Due Date"
-  />
-</div>
+              <div className="due-date-button">
+                <input
+                  type="text"
+                  className="datepicker"
+                  value={todoData.dueDate || ""}
+                  onChange={handleChange}
+                  onFocus={(e) => (e.target.type = "date")}
+                  onBlur={handleBlur}
+                  name="dueDate"
+                  placeholder="Select Due Date"
+                />
+              </div>
 
               <div className="submit-button">
                 <button type="button" onClick={closeModal}>

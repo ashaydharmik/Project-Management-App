@@ -12,25 +12,25 @@ const todoSchema = new mongoose.Schema(
       required: [true, "Please enter your email"],
     },
     checklist: [
-        {
-          label: {
-            type: String,
-            required: [true, "Please enter checklist item label"],
-          },
-          done: {
-            type: Boolean,
-            default: false,
-          },
-        }
-      ],
+      {
+        label: {
+          type: String,
+          required: [true, "Please enter checklist item label"],
+        },
+        done: {
+          type: Boolean,
+          default: false,
+        },
+      },
+    ],
     dueDate: {
       type: Date,
-     default:null,
+      default: null,
     },
     section: {
       type: String,
-      enum: ['backlog', 'todo', 'progress', 'done'],
-      default: 'todo',
+      enum: ["backlog", "todo", "progress", "done"],
+      default: "todo",
     },
   },
   {

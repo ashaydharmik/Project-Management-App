@@ -3,14 +3,11 @@
 .todoModal-container {
   width: 100%;
   height: 100%;
-
   .todo-form-container {
-
     form {
       font-size: 13px;
       font-weight: 600;
       font-family: "open sans";
-
       .task-title {
         display: flex;
         flex-direction: column;
@@ -18,7 +15,6 @@
         height: fit-content;
         height: 9vh;
         label {
-
           span {
             color: red;
           }
@@ -27,13 +23,12 @@
           margin-top: 5px;
           border-radius: 4px;
           height: 35px;
-          border: 1px solid #E2E2E2;
+          border: 1px solid #e2e2e2;
           padding-left: 10px;
           outline: none;
-          &::placeholder{
+          &::placeholder {
             font-size: 12px;
-            color: #9B959F;
-            // padding-left: 5px;
+            color: #9b959f;
           }
         }
       }
@@ -42,18 +37,15 @@
         display: flex;
         justify-content: space-between;
         gap: 10px;
-        height:5vh;
+        height: 5vh;
         align-items: center;
-        // background-color: #63C05B;
         label {
- 
           span {
             color: red;
           }
         }
-      
         button {
-          border: 1px solid #E2E2E2;
+          border: 1px solid #e2e2e2;
           border-radius: 7px;
           font-size: 10px;
           font-weight: 500;
@@ -70,19 +62,16 @@
             color: red;
             font-size: 15px;
           }
-      
           &:nth-child(3) svg {
-            color: #18B0FF;
+            color: #18b0ff;
             font-size: 15px;
           }
-      
           &:nth-child(4) svg {
-            color: #63C05B;
+            color: #63c05b;
             font-size: 15px;
           }
         }
       }
-      
       .checklist {
         margin-top: 1rem;
         width: 100%;
@@ -97,41 +86,35 @@
         max-height: 25vh;
         overflow-y: auto;
         label {
-            height: 3rem;
-    border: 1px solid #E2E2E2;
+          height: 3rem;
+          border: 1px solid #e2e2e2;
           height: fit-content;
           border-radius: 9px;
           padding: 0.3rem;
           width: 100%;
           position: relative;
           display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    margin-bottom: 10px;
-   
-
-    input{
-        &:nth-child(1) {
+          justify-content: flex-start;
+          align-items: center;
+          margin-bottom: 10px;
+          input {
+            &:nth-child(1) {
               width: 5%;
-            margin-right: 5px;
-            height: 13px;
-            cursor: pointer;
-          accent-color:#17A2B8;
-          // border-radius: 13px;
-            
-          }
-          &:nth-child(2){
+              margin-right: 5px;
+              height: 13px;
+              cursor: pointer;
+              accent-color: #17a2b8;
+            }
+            &:nth-child(2) {
               width: 88%;
               border: none;
               outline: none;
-              &::placeholder{
+              &::placeholder {
                 font-size: 12px;
-                color: #9B959F;
-                // padding-left: 5px;
+                color: #9b959f;
               }
+            }
           }
-
-    }
           svg {
             position: absolute;
             right: 9px;
@@ -142,31 +125,24 @@
         }
       }
       .task-add-button {
-          // margin-top: 0.5rem;
-          width: 100%;
-          height: 3vh;
-    //       .errMsg{
-    //         font-size: 10px;
-    // color: red;
-    // margin-bottom: 7px;
-    //       }
-          button{
+        width: 100%;
+        height: 3vh;
+        button {
           color: #767575;
-font-size: 12px;
-            border: none;
-            background: none;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            width: 100%;
-            cursor: pointer;
-            
+          font-size: 12px;
+          border: none;
+          background: none;
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          width: 100%;
+          cursor: pointer;
+          font-weight: 500;
+          svg {
+            margin-right: 6px;
+            color: #767575;
             font-weight: 500;
-            svg {
-              margin-right: 6px;
-              color: #767575;
-              font-weight: 500
-            }
+          }
         }
       }
       .task-date-save-buttons {
@@ -174,20 +150,15 @@ font-size: 12px;
         bottom: 1rem;
         display: flex;
         height: 6vh;
-        /* padding: 1rem; */
         justify-content: space-between;
         width: 90%;
-        // background-color: #63C05B;
         .due-date-button {
-            width: 30%;
-           
-           
-            
+          width: 30%;
           .datepicker {
             width: 95%;
             font-size: 14px;
             padding: 5px 10px;
-            border: 1px solid #E2E2E2;
+            border: 1px solid #e2e2e2;
             border-radius: 10px;
             font-weight: 600;
             color: #707070;
@@ -196,16 +167,12 @@ font-size: 12px;
             cursor: pointer;
             text-align: center;
             outline: none;
-            &::placeholder{
+            &::placeholder {
               color: #707070;
-             
             }
-        
           }
-          
         }
         .submit-button {
-            // background-color: antiquewhite;
           display: flex;
           justify-content: space-between;
           width: 55%;
@@ -216,17 +183,16 @@ font-size: 12px;
             border: 1px solid grey;
             border-radius: 10px;
             font-weight: 600;
-            // color: grey;
             height: 2.3rem;
             cursor: pointer;
-            &:nth-child(1){
-                border:1.5px solid #CF3636;
-                 color: #CF3636; 
-                 background-color: white;            
+            &:nth-child(1) {
+              border: 1.5px solid #cf3636;
+              color: #cf3636;
+              background-color: white;
             }
-            &:nth-child(2){
-                background: #17A2B8;
-                color: white;             
+            &:nth-child(2) {
+              background: #17a2b8;
+              color: white;
             }
           }
         }
@@ -234,8 +200,8 @@ font-size: 12px;
     }
   }
 }
-.errMsg{
+.errMsg {
   font-size: 10px;
-color: red;
-margin-bottom: 7px;
+  color: red;
+  margin-bottom: 7px;
 }

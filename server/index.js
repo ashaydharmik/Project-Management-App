@@ -16,10 +16,8 @@ app.use(bodyParser.json());
 
 app.use("/", require("./Routes/userAndTodoRoute"));
 
-// Serve static files from the 'build' directory
 app.use(express.static(path.join(__dirname, "build")));
 
-// Serve the index.html for any other routes
 app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });

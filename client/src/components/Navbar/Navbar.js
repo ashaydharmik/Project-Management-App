@@ -8,24 +8,22 @@ import { IoLogOutOutline } from "react-icons/io5";
 import { useGlobal } from "../Context/Context";
 import LogoutModal from "../Modal/LogoutModal/LogoutModal";
 
-
 const Navbar = () => {
-  const { 
+  const {
     handleBoardClick,
     handleAnalyticsClick,
     handleSettingsClick,
-    activeNavPage} = useGlobal();
-    const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+    activeNavPage,
+  } = useGlobal();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
-    const handleLogoutClick = () => {
-      setIsLogoutModalOpen(true);
-    };
-  
-    const handleCloseLogoutModal = () => {
+  const handleLogoutClick = () => {
+    setIsLogoutModalOpen(true);
+  };
 
-      setIsLogoutModalOpen(false);
-    };
-   
+  const handleCloseLogoutModal = () => {
+    setIsLogoutModalOpen(false);
+  };
 
   return (
     <>
@@ -35,27 +33,39 @@ const Navbar = () => {
           <h1>Pro Manage</h1>
         </div>
         <div className="nav-menu">
-          <button onClick={handleBoardClick} className={activeNavPage === "BoardPage" ? "active" : ""}>
+          <button
+            onClick={handleBoardClick}
+            className={activeNavPage === "BoardPage" ? "active" : ""}
+          >
             <img src={board} alt="" />
             <span>Board</span>
           </button>
-          <button onClick={handleAnalyticsClick} className={activeNavPage === "AnalyticsPage" ? "active" : ""}>
+          <button
+            onClick={handleAnalyticsClick}
+            className={activeNavPage === "AnalyticsPage" ? "active" : ""}
+          >
             <img src={analytics} alt="" />
             <span>Analytics</span>
           </button>
-          <button onClick={handleSettingsClick} className={activeNavPage === "SettingsPage" ? "active" : ""}>
+          <button
+            onClick={handleSettingsClick}
+            className={activeNavPage === "SettingsPage" ? "active" : ""}
+          >
             <img src={setting} alt="" />
             <span>Settings</span>
           </button>
         </div>
       </div>
       <div className="logout-container">
-        <p onClick={handleLogoutClick}> 
+        <p onClick={handleLogoutClick}>
           <IoLogOutOutline />
           <span>Log out</span>
         </p>
       </div>
-      <LogoutModal isOpen={isLogoutModalOpen} onClose={handleCloseLogoutModal} />
+      <LogoutModal
+        isOpen={isLogoutModalOpen}
+        onClose={handleCloseLogoutModal}
+      />
     </>
   );
 };

@@ -4,7 +4,6 @@
   width: 100%;
   height: 100vh;
   padding: 1rem;
-
   .heading {
     display: flex;
     justify-content: flex-start;
@@ -12,42 +11,38 @@
     width: 100%;
     height: 10vh;
     gap: 1rem;
-    
-    @include md{
-        height: 5vh;
-        font-size: 16px;
-        margin-bottom: 2rem;
+    @include md {
+      height: 5vh;
+      font-size: 16px;
+      margin-bottom: 2rem;
     }
   }
-
   .todo-container {
     border: 1px solid #b8c0c9;
     width: 100%;
     max-height: 80vh;
     border-radius: 1rem;
     padding: 1rem;
-    @include md{
-        padding: 0;
-    border: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    @include md {
+      padding: 0;
+      border: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .todo-box {
       height: 100%;
       width: 100%;
-      @include md{
+      @include md {
         width: 50%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    flex-direction: column;
-    border: 1px solid grey;
-    padding: 1rem;
-    border-radius: 10px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        flex-direction: column;
+        border: 1px solid grey;
+        padding: 1rem;
+        border-radius: 10px;
       }
-      
-
       .priority-box {
         width: 100%;
         height: 5%;
@@ -55,14 +50,13 @@
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        p{
+        p {
           text-transform: uppercase;
           font-size: 12px;
-   
         }
-        svg{
-          margin-right: 5px;  
-          @include md{
+        svg {
+          margin-right: 5px;
+          @include md {
             font-size: 18px;
           }
         }
@@ -72,21 +66,18 @@
         font-size: 1.5rem;
         font-weight: 600;
         max-width: 100%;
-       width: 100%;
+        width: 100%;
         margin-bottom: 10px;
         align-items: center;
         display: flex;
-        /* place-items: center; */
-    justify-content: flex-start;
+        justify-content: flex-start;
         margin-bottom: 1rem;
-        p{
+        p {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          
         }
-        
-        @include md{
+        @include md {
           margin-bottom: 2rem;
         }
       }
@@ -98,7 +89,7 @@
         margin-bottom: 10px;
         font-size: 18px;
         font-weight: 600;
-        @include md{
+        @include md {
           font-size: 16px;
         }
       }
@@ -112,14 +103,10 @@
         gap: 1rem;
         margin-bottom: 15px;
         label {
-        //   background: aquamarine;
           max-width: 100%;
           height: 100%;
-          // height: auto;
-          /* height: fit-content; */
           border: 1px solid grey;
           border-radius: 12px;
-          /* height: auto; */
           height: fit-content;
           display: flex;
           justify-content: flex-start;
@@ -128,16 +115,14 @@
           padding: 0.5rem 1rem;
           font-size: 18px;
           font-weight: 500;
-          white-space: pre-wrap; /* Allow long text to wrap to the next line */
+          white-space: pre-wrap;
           word-break: break-word;
           input {
             border-radius: 5px;
-            // font-size: 10px;
             height: fit-content;
-            accent-color: #17A2B8;
+            accent-color: #17a2b8;
           }
         }
-      
       }
       .date-box {
         width: 100%;
@@ -146,15 +131,12 @@
         justify-content: flex-start;
         align-items: center;
         gap: 2rem;
-        // background: beige;
-    padding-top: 10px;
-    // padding-bottom: 1rem;
-        p{
-            font-weight: 500;
+        padding-top: 10px;
+        p {
+          font-weight: 500;
         }
         p:last-child {
-            background: #CF3636;
-
+          background: #cf3636;
           color: white;
           font-weight: 500;
           padding: 0.3rem 0.5rem;

@@ -21,7 +21,7 @@ const AnalyticsPage = () => {
     doneTodo,
     fetchCompletedTodoTask,
     dueDate,
-    fetchDueDateTodoTask
+    fetchDueDateTodoTask,
   } = useGlobal();
 
   useEffect(() => {

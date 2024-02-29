@@ -1,12 +1,12 @@
 const asyncHandler = require("../Middleware/asyncHandler");
 const Todo = require("../Models/todoModel");
 const { format } = require("date-fns");
-const User = require("../Models/userModel")
+const User = require("../Models/userModel");
+
 //create todo task
-const addTodo = asyncHandler(async(req, res) => {
+const addTodo = asyncHandler(async (req, res) => {
   const { taskName, priority, checklist, dueDate, section } = req.body;
 
-  // Ensure that the user is authenticated (check your authentication middleware)
   if (!req.user) {
     res.status(401).json({ message: "Unauthorized" });
     return;
@@ -17,13 +17,12 @@ const addTodo = asyncHandler(async(req, res) => {
     return;
   }
 
-  // Additional date validation (you can use your preferred library for this)
   if (isNaN(new Date(dueDate))) {
     res.status(400).json({ message: "Invalid due date format" });
     return;
   }
 
-  const user = await User.findOne({ email: req.user.email }); // Adjust this based on your user schema
+  const user = await User.findOne({ email: req.user.email });
 
   if (!user) {
     res.status(401).json({ message: "Unauthorized" });
@@ -31,7 +30,7 @@ const addTodo = asyncHandler(async(req, res) => {
   }
 
   const availableTodo = await Todo.findOne({ taskName, user: user._id });
-  
+
   if (availableTodo) {
     res.status(400).json({ message: "Task name already exists!!" });
     return;
@@ -46,10 +45,12 @@ const addTodo = asyncHandler(async(req, res) => {
     user: user._id,
   });
 
-  console.log(newTodo)
+  console.log(newTodo);
 
   if (newTodo) {
-    const formattedDueDate = newTodo.dueDate ? format(newTodo.dueDate, "MM/dd/yyyy") : null;
+    const formattedDueDate = newTodo.dueDate
+      ? format(newTodo.dueDate, "MM/dd/yyyy")
+      : null;
     res.status(200).json({
       message: "Todo task successfully created",
       _id: newTodo.id,
@@ -64,11 +65,7 @@ const addTodo = asyncHandler(async(req, res) => {
   }
 });
 
-
-
-//fetch single todo task created 
-
-
+//fetch single todo task created
 const fetchRecentTodo = asyncHandler(async (req, res) => {
   const { _id } = req.params;
   const availableTodo = await Todo.findOne({ _id });
@@ -76,22 +73,21 @@ const fetchRecentTodo = asyncHandler(async (req, res) => {
   if (!availableTodo) {
     res.status(404).json({ error: "Todo not found" });
   } else {
-    // Format the dueDate if it exists, considering UTC time zone
     if (availableTodo.dueDate) {
-      availableTodo.dueDate = format(new Date(availableTodo.dueDate), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", { timeZone: "UTC" });
+      availableTodo.dueDate = format(
+        new Date(availableTodo.dueDate),
+        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+        { timeZone: "UTC" }
+      );
     }
 
     res.status(200).json({ message: "Todo Found", availableTodo });
   }
 });
 
-
-
-
 //fetch all todo task created for the authenticated user
 const getAllTodoCreated = asyncHandler(async (req, res) => {
-    try {
-    // Ensure that the user is authenticated
+  try {
     if (!req.user) {
       res.status(401).json({ message: "Unauthorized" });
       return;
@@ -99,18 +95,17 @@ const getAllTodoCreated = asyncHandler(async (req, res) => {
 
     const { selectedOption } = req.query;
 
-    // Fetch todos based on the selectedOption
     let todos;
 
     switch (selectedOption) {
-      case 'Today':
+      case "Today":
         todos = await Todo.find({
           user: req.user._id,
           createdAt: { $gte: new Date().setHours(0, 0, 0, 0) },
         });
         break;
 
-      case 'This Week':
+      case "This Week":
         const weekStartDate = new Date();
         weekStartDate.setDate(weekStartDate.getDate() - 6); // 6 days ago
         todos = await Todo.find({
@@ -119,7 +114,7 @@ const getAllTodoCreated = asyncHandler(async (req, res) => {
         });
         break;
 
-      case 'This Month':
+      case "This Month":
         const monthStartDate = new Date();
         monthStartDate.setMonth(monthStartDate.getMonth() - 1); // 1 month ago
         todos = await Todo.find({
@@ -129,48 +124,56 @@ const getAllTodoCreated = asyncHandler(async (req, res) => {
         break;
 
       default:
-        res.status(400).json({ message: 'Invalid selected option' });
+        res.status(400).json({ message: "Invalid selected option" });
         return;
     }
 
     res.status(200).json({ todos });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
-
 //update todo task
-const updateTodo = asyncHandler(async(req,res)=>{
-  const { taskName, priority, checklist, dueDate, section } = req.body; // Make sure to include 'section' in the destructuring
+const updateTodo = asyncHandler(async (req, res) => {
+  const { taskName, priority, checklist, dueDate, section } = req.body;
   const { _id } = req.params;
-     
+
   if (!req.user) {
     res.status(401).json({ message: "Unauthorized" });
     return;
   }
 
   const availableTodo = await Todo.findOne({ _id });
-  if(!availableTodo){
+  if (!availableTodo) {
     res.status(404).json({ message: "Todo not exists" });
     return;
   }
 
-  const updatedTodo = await Todo.findByIdAndUpdate(_id, {
-    taskName, priority, checklist, dueDate, section
-  }, { new: true });
+  const updatedTodo = await Todo.findByIdAndUpdate(
+    _id,
+    {
+      taskName,
+      priority,
+      checklist,
+      dueDate,
+      section,
+    },
+    { new: true }
+  );
 
-  if(updatedTodo){
-    res.status(200).json({ message: "Product Updated Successfully", updatedTodo });
+  if (updatedTodo) {
+    res
+      .status(200)
+      .json({ message: "Product Updated Successfully", updatedTodo });
   } else {
     res.status(400).json({ message: "Invalid Data" });
   }
 });
 
-
-//delete Todo 
-const deleteTodo=asyncHandler(async(req,res)=>{
+//delete Todo
+const deleteTodo = asyncHandler(async (req, res) => {
   const { _id, taskName } = req.params;
 
   if (!_id) {
@@ -185,87 +188,42 @@ const deleteTodo=asyncHandler(async(req,res)=>{
   if (!deletedTodo) {
     res.status(404).json({ error: "Created Todo not found." });
   } else {
-    res.status(200).json({ message: "Todo Successfully Deleted!!", taskName: deletedTodo.taskName });
+    res
+      .status(200)
+      .json({
+        message: "Todo Successfully Deleted!!",
+        taskName: deletedTodo.taskName,
+      });
   }
-
-
-})
-
-
-//move to different sections
-const moveToSection=asyncHandler(async(req,res)=>{
-    const { _id } = req.params;
-    const { section } = req.body;
-
-    try {
-        const todo = await Todo.findById({_id});
-
-        if (!todo) {
-            res.status(404);
-            throw new Error('Todo not found');
-        }
-
-        todo.section = section;
-        const updatedTodo = await todo.save();
-
-        res.status(200).json({ success: true, data: updatedTodo });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
 });
 
+//move to different sections
+const moveToSection = asyncHandler(async (req, res) => {
+  const { _id } = req.params;
+  const { section } = req.body;
 
-//filtering the select option today, week and month
-// const selectTodos = asyncHandler(async (req, res) => {
-//   try {
-//     // Ensure that the user is authenticated
-//     if (!req.user) {
-//       res.status(401).json({ message: "Unauthorized" });
-//       return;
-//     }
+  try {
+    const todo = await Todo.findById({ _id });
 
-//     const { selectedOption } = req.query;
+    if (!todo) {
+      res.status(404);
+      throw new Error("Todo not found");
+    }
 
-//     // Fetch todos based on the selectedOption
-//     let todos;
+    todo.section = section;
+    const updatedTodo = await todo.save();
 
-//     switch (selectedOption) {
-//       case 'today':
-//         todos = await Todo.find({
-//           user: req.user._id,
-//           createdAt: { $gte: new Date().setHours(0, 0, 0, 0) },
-//         });
-//         break;
+    res.status(200).json({ success: true, data: updatedTodo });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
 
-//       case 'week':
-//         const weekStartDate = new Date();
-//         weekStartDate.setDate(weekStartDate.getDate() - 6); // 6 days ago
-//         todos = await Todo.find({
-//           user: req.user._id,
-//           createdAt: { $gte: weekStartDate },
-//         });
-//         break;
-
-//       case 'month':
-//         const monthStartDate = new Date();
-//         monthStartDate.setMonth(monthStartDate.getMonth() - 1); // 1 month ago
-//         todos = await Todo.find({
-//           user: req.user._id,
-//           createdAt: { $gte: monthStartDate },
-//         });
-//         break;
-
-//       default:
-//         res.status(400).json({ message: 'Invalid selected option' });
-//         return;
-//     }
-
-//     res.status(200).json({ todos });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Internal server error' });
-//   }
-// });
-
-
-module.exports = {addTodo, fetchRecentTodo, getAllTodoCreated, updateTodo , deleteTodo, moveToSection};
+module.exports = {
+  addTodo,
+  fetchRecentTodo,
+  getAllTodoCreated,
+  updateTodo,
+  deleteTodo,
+  moveToSection,
+};

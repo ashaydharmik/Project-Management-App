@@ -1,12 +1,11 @@
 import React from "react";
 import "./auth.scss";
 import image from "../../assets/avatar1.jpg";
-import circle from "../../assets/circle1.png"
+import circle from "../../assets/circle1.png";
 import Register from "../Authentication/Register/Register";
 import Login from "./Login/Login";
 import { useGlobal } from "../Context/Context";
 const Auth = () => {
-  console.log("Auth component rendered");
   const { showRegister } = useGlobal();
 
   return (
